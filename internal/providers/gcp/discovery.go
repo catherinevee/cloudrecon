@@ -417,27 +417,3 @@ func (p *GCPProvider) mapDependencies(ctx context.Context, resources []core.Reso
 	// TODO: Implement dependency mapping
 }
 
-// memoryCache is a simple in-memory cache implementation
-type memoryCache struct {
-	data map[string]interface{}
-}
-
-func (c *memoryCache) Get(key string) (interface{}, bool) {
-	value, ok := c.data[key]
-	return value, ok
-}
-
-func (c *memoryCache) Set(key string, value interface{}, ttl time.Duration) {
-	if c.data == nil {
-		c.data = make(map[string]interface{})
-	}
-	c.data[key] = value
-}
-
-func (c *memoryCache) Delete(key string) {
-	delete(c.data, key)
-}
-
-func (c *memoryCache) Clear() {
-	c.data = make(map[string]interface{})
-}
