@@ -11,9 +11,7 @@ import (
 type DiscoveryOrchestrator struct {
 	providers map[string]CloudProvider
 	storage   Storage
-	cache     Cache
 	options   DiscoveryOptions
-	mu        sync.RWMutex
 }
 
 // NewDiscoveryOrchestrator creates a new discovery orchestrator
@@ -143,6 +141,7 @@ func (d *DiscoveryOrchestrator) discoverAccountResources(
 				return nativeProvider.DiscoverWithNativeTool(ctx, account)
 			}
 		}
+		// Fall through to direct API discovery if native tools are not available
 	}
 
 	// Fall back to direct API discovery

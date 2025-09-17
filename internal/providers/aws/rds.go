@@ -314,14 +314,3 @@ func (p *AWSProvider) estimateRDSSnapshotCost(snapshot rdsTypes.DBSnapshot) floa
 	return 0.0
 }
 
-func (p *AWSProvider) parseRDSParameterGroupTags(paramGroup rdsTypes.DBParameterGroup) map[string]string {
-	tags := make(map[string]string)
-	// RDS Parameter Groups don't have tags in the current API version
-	return tags
-}
-
-func (p *AWSProvider) parseRDSSubnetGroupTags(subnetGroup rdsTypes.DBSubnetGroup) map[string]string {
-	tags := make(map[string]string)
-	// RDS Subnet Groups don't have tags in the current API version
-	return tags
-}

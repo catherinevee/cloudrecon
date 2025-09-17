@@ -112,7 +112,12 @@ func (s *SQLiteStorage) StoreResources(ctx context.Context, resources []core.Res
 	if err != nil {
 		return fmt.Errorf("failed to begin transaction: %w", err)
 	}
-	defer tx.Rollback()
+	defer func() {
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			// Log rollback error but don't fail the operation
+			_ = rollbackErr
+		}
+	}()
 
 	stmt, err := tx.PrepareContext(ctx, `
 		INSERT OR REPLACE INTO resources (
@@ -149,7 +154,12 @@ func (s *SQLiteStorage) StoreDiscovery(result *core.DiscoveryResult) error {
 	if err != nil {
 		return fmt.Errorf("failed to begin transaction: %w", err)
 	}
-	defer tx.Rollback()
+	defer func() {
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			// Log rollback error but don't fail the operation
+			_ = rollbackErr
+		}
+	}()
 
 	// Insert discovery run
 	providers := make([]string, 0, len(result.Providers))
@@ -281,10 +291,14 @@ func (s *SQLiteStorage) GetResources(query string, args ...interface{}) ([]core.
 
 		// Parse JSON fields
 		if tagsJSON != "" {
-			json.Unmarshal([]byte(tagsJSON), &resource.Tags)
+			if err := json.Unmarshal([]byte(tagsJSON), &resource.Tags); err != nil {
+				resource.Tags = make(map[string]string)
+			}
 		}
 		if depsJSON != "" {
-			json.Unmarshal([]byte(depsJSON), &resource.Dependencies)
+			if err := json.Unmarshal([]byte(depsJSON), &resource.Dependencies); err != nil {
+				resource.Dependencies = make(map[string]string)
+			}
 		}
 
 		resources = append(resources, resource)

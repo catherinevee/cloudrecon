@@ -90,6 +90,9 @@ exports/
 *.yaml
 *.yml
 
+# Exception: GitHub workflows
+!.github/workflows/*.yml
+
 # Credentials
 credentials/
 *.pem

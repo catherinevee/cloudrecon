@@ -15,15 +15,11 @@ import (
 )
 
 type GCPProvider struct {
-	credentials core.Credentials
-	cache       core.Cache
 }
 
 // NewProvider creates a new GCP provider
 func NewProvider(cfg core.GCPConfig) (*GCPProvider, error) {
-	return &GCPProvider{
-		cache: &memoryCache{},
-	}, nil
+	return &GCPProvider{}, nil
 }
 
 // Name returns the provider name
@@ -361,20 +357,6 @@ func (p *GCPProvider) discoverAssetInventoryResources(ctx context.Context, proje
 }
 
 // Helper methods for resource discovery
-func (p *GCPProvider) discoverDisks(ctx context.Context, region string, account core.Account) []core.Resource {
-	// TODO: Implement disk discovery
-	return []core.Resource{}
-}
-
-func (p *GCPProvider) discoverNetworks(ctx context.Context, region string, account core.Account) []core.Resource {
-	// TODO: Implement network discovery
-	return []core.Resource{}
-}
-
-func (p *GCPProvider) discoverIAMServiceAccounts(ctx context.Context, region string, account core.Account) []core.Resource {
-	// TODO: Implement IAM service account discovery
-	return []core.Resource{}
-}
 
 // parseAssetToResource converts a Cloud Asset to a Resource
 func (p *GCPProvider) parseAssetToResource(asset *assetpb.Asset, projectID string) core.Resource {

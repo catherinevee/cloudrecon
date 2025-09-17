@@ -9,15 +9,11 @@ import (
 )
 
 type AzureProvider struct {
-	credentials core.Credentials
-	cache       core.Cache
 }
 
 // NewProvider creates a new Azure provider
 func NewProvider(cfg core.AzureConfig) (*AzureProvider, error) {
-	return &AzureProvider{
-		cache: &memoryCache{},
-	}, nil
+	return &AzureProvider{}, nil
 }
 
 // Name returns the provider name
