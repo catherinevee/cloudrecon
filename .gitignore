@@ -1,0 +1,270 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+cloudrecon
+cloudrecon.exe
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+coverage.html
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
+
+# Go workspace file
+go.work
+
+# Build directories
+build/
+dist/
+bin/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Log files
+*.log
+logs/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Configuration files with secrets
+config/local.yaml
+config/secrets.yaml
+*.env
+.env
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Cache directories
+.cache/
+cache/
+
+# Test coverage
+coverage.out
+coverage.html
+
+# Air (live reload) files
+.air.toml
+tmp/
+
+# Docker
+.dockerignore
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# CloudRecon specific
+cloudrecon.db
+exports/
+*.json
+*.csv
+*.yaml
+*.yml
+
+# Credentials
+credentials/
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Archive files
+*.tar.gz
+*.zip
+*.rar
+*.7z
+
+# Documentation build
+docs/_build/
+site/
+
+# Node.js (if using for documentation)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python (if using for scripts)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# JetBrains IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# MacOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# CloudRecon specific patterns
+# Discovery results
+discovery-*.json
+discovery-*.csv
+discovery-*.yaml
+
+# Export files
+export-*.json
+export-*.csv
+export-*.yaml
+export-*.tfstate
+
+# Cache files
+*.cache
+cache/
+
+# Log files
+*.log
+logs/
+
+# Temporary discovery files
+discovery-temp/
+temp-discovery/
+
+# Backup databases
+*.db.bak
+*.sqlite.bak
+*.sqlite3.bak
+
+# Test data
+test-data/
+test-resources/
+mock-data/
+
+# Performance profiles
+*.prof
+*.pprof
+cpu.prof
+mem.prof
+
+# Benchmark results
+benchmark-*.txt
+benchmark-*.json
+
+# Lint results
+lint-results.txt
+lint-results.json
+
+# Security scan results
+security-scan-*.json
+vulnerability-scan-*.json
+
+# Compliance reports
+compliance-*.json
+compliance-*.pdf
+compliance-*.html
+
+# Cost analysis reports
+cost-analysis-*.json
+cost-analysis-*.csv
+cost-analysis-*.pdf
+
+# Resource reports
+resource-report-*.json
+resource-report-*.csv
+resource-report-*.pdf
+resource-report-*.html
