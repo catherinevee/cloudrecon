@@ -297,7 +297,7 @@ func (s *SQLiteStorage) GetResources(query string, args ...interface{}) ([]core.
 		}
 		if depsJSON != "" {
 			if err := json.Unmarshal([]byte(depsJSON), &resource.Dependencies); err != nil {
-				resource.Dependencies = make(map[string]string)
+				resource.Dependencies = make([]string, 0)
 			}
 		}
 

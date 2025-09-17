@@ -112,7 +112,6 @@ func (p *AWSProvider) discoverPublicS3Buckets(ctx context.Context, config aws.Co
 	return resources
 }
 
-
 // Helper methods for S3 resources
 func (p *AWSProvider) isBucketPublic(ctx context.Context, client *s3.Client, bucketName string) (bool, error) {
 	// Check bucket public access block
@@ -150,4 +149,3 @@ func (p *AWSProvider) estimateBucketCost(ctx context.Context, client *s3.Client,
 	// This would integrate with AWS Cost Explorer API or use pricing data
 	return 0.0
 }
-
