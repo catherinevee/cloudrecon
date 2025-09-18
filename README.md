@@ -2,10 +2,10 @@
 
 > **Multi-cloud infrastructure discovery and analysis in a single command**
 
-[![CloudRecon CI/CD Pipeline](https://github.com/cloudrecon/cloudrecon/workflows/CloudRecon%20CI%2FCD%20Pipeline/badge.svg)](https://github.com/cloudrecon/cloudrecon/actions)
-[![CI/CD Pipeline](https://github.com/cloudrecon/cloudrecon/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/cloudrecon/cloudrecon/actions)
-[![Docker Build](https://github.com/cloudrecon/cloudrecon/workflows/Docker%20Build/badge.svg)](https://github.com/cloudrecon/cloudrecon/actions)
-[![Trivy Security Scan](https://github.com/cloudrecon/cloudrecon/workflows/Trivy%20Security%20Scan/badge.svg)](https://github.com/cloudrecon/cloudrecon/actions)
+[![CloudRecon CI/CD Pipeline](https://github.com/catherinevee/cloudrecon/workflows/CloudRecon%20CI%2FCD%20Pipeline/badge.svg)](https://github.com/catherinevee/cloudrecon/actions)
+[![CI/CD Pipeline](https://github.com/catherinevee/cloudrecon/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/catherinevee/cloudrecon/actions)
+[![Docker Build](https://github.com/catherinevee/cloudrecon/workflows/Docker%20Build/badge.svg)](https://github.com/catherinevee/cloudrecon/actions)
+[![Trivy Security Scan](https://github.com/catherinevee/cloudrecon/workflows/Trivy%20Security%20Scan/badge.svg)](https://github.com/catherinevee/cloudrecon/actions)
 [![Go Version](https://img.shields.io/badge/Go-1.21+-blue.svg)](https://golang.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)]()
