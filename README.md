@@ -2,7 +2,8 @@
 
 > **Multi-cloud infrastructure discovery and analysis in a single command**
 
-[![CI/CD](https://github.com/cloudrecon/cloudrecon/workflows/CI%2FCD/badge.svg)](https://github.com/cloudrecon/cloudrecon/actions)
+[![CloudRecon CI/CD Pipeline](https://github.com/cloudrecon/cloudrecon/workflows/CloudRecon%20CI%2FCD%20Pipeline/badge.svg)](https://github.com/cloudrecon/cloudrecon/actions)
+[![CI/CD Pipeline](https://github.com/cloudrecon/cloudrecon/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/cloudrecon/cloudrecon/actions)
 [![Docker Build](https://github.com/cloudrecon/cloudrecon/workflows/Docker%20Build/badge.svg)](https://github.com/cloudrecon/cloudrecon/actions)
 [![Trivy Security Scan](https://github.com/cloudrecon/cloudrecon/workflows/Trivy%20Security%20Scan/badge.svg)](https://github.com/cloudrecon/cloudrecon/actions)
 [![Go Version](https://img.shields.io/badge/Go-1.21+-blue.svg)](https://golang.org/)
