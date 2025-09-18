@@ -130,7 +130,7 @@ func (e *EnhancedCLI) runDependencyAnalysis() error {
 	analyzer := analysis.NewPerformanceOptimizedDependencyAnalyzer(e.storage, config)
 
 	start := time.Now()
-	graph, err := analyzer.AnalyzeDependenciesOptimized(nil)
+	graph, err := analyzer.AnalyzeDependenciesOptimized(context.TODO())
 	if err != nil {
 		return err
 	}
@@ -149,7 +149,7 @@ func (e *EnhancedCLI) runSecurityAnalysis() error {
 	analyzer := analysis.NewPerformanceOptimizedSecurityAnalyzer(e.storage, config)
 
 	start := time.Now()
-	report, err := analyzer.AnalyzeSecurityOptimized(nil)
+	report, err := analyzer.AnalyzeSecurityOptimized(context.TODO())
 	if err != nil {
 		return err
 	}
@@ -168,7 +168,7 @@ func (e *EnhancedCLI) runCostAnalysis() error {
 	analyzer := analysis.NewPerformanceOptimizedCostAnalyzer(e.storage, config)
 
 	start := time.Now()
-	report, err := analyzer.AnalyzeCostOptimized(nil)
+	report, err := analyzer.AnalyzeCostOptimized(context.TODO())
 	if err != nil {
 		return err
 	}
@@ -226,7 +226,7 @@ func (e *EnhancedCLI) runCustomAnalysis() error {
 		if includeDeps {
 			fmt.Println(" Analyzing dependencies...")
 			analyzer := analysis.NewPerformanceOptimizedDependencyAnalyzer(e.storage, config)
-			graph, err := analyzer.AnalyzeDependenciesOptimized(nil)
+			graph, err := analyzer.AnalyzeDependenciesOptimized(context.TODO())
 			if err != nil {
 				return err
 			}
@@ -236,7 +236,7 @@ func (e *EnhancedCLI) runCustomAnalysis() error {
 		if includeSecurity {
 			fmt.Println(" Analyzing security...")
 			analyzer := analysis.NewPerformanceOptimizedSecurityAnalyzer(e.storage, config)
-			report, err := analyzer.AnalyzeSecurityOptimized(nil)
+			report, err := analyzer.AnalyzeSecurityOptimized(context.TODO())
 			if err != nil {
 				return err
 			}
@@ -246,7 +246,7 @@ func (e *EnhancedCLI) runCustomAnalysis() error {
 		if includeCost {
 			fmt.Println(" Analyzing costs...")
 			analyzer := analysis.NewPerformanceOptimizedCostAnalyzer(e.storage, config)
-			report, err := analyzer.AnalyzeCostOptimized(nil)
+			report, err := analyzer.AnalyzeCostOptimized(context.TODO())
 			if err != nil {
 				return err
 			}
