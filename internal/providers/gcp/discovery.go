@@ -326,6 +326,7 @@ func (p *GCPProvider) discoverAssetInventoryResources(ctx context.Context, proje
 // Helper methods for resource discovery
 
 // parseAssetToResource converts a Cloud Asset to a Resource
+//nolint:unused
 func (p *GCPProvider) parseAssetToResource(asset *assetpb.Asset, projectID string) core.Resource {
 	resource := core.Resource{
 		ID:              asset.Name,
@@ -353,6 +354,7 @@ func (p *GCPProvider) parseAssetToResource(asset *assetpb.Asset, projectID strin
 }
 
 // Helper methods for parsing assets
+//nolint:unused
 func (p *GCPProvider) extractRegionFromAsset(asset *assetpb.Asset) string {
 	// Extract region from asset name
 	// Format: projects/{project}/locations/{location}/...
@@ -360,6 +362,7 @@ func (p *GCPProvider) extractRegionFromAsset(asset *assetpb.Asset) string {
 	return "global"
 }
 
+//nolint:unused
 func (p *GCPProvider) extractServiceFromAsset(asset *assetpb.Asset) string {
 	// Extract service from asset type
 	// Format: {service}.googleapis.com/{resource}
@@ -367,6 +370,7 @@ func (p *GCPProvider) extractServiceFromAsset(asset *assetpb.Asset) string {
 	return "unknown"
 }
 
+//nolint:unused
 func (p *GCPProvider) extractTypeFromAsset(asset *assetpb.Asset) string {
 	// Extract type from asset type
 	// Format: {service}.googleapis.com/{resource}
@@ -374,6 +378,7 @@ func (p *GCPProvider) extractTypeFromAsset(asset *assetpb.Asset) string {
 	return "unknown"
 }
 
+//nolint:unused
 func (p *GCPProvider) extractNameFromAsset(asset *assetpb.Asset) string {
 	// Extract name from asset name
 	// TODO: Implement proper name extraction

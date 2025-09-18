@@ -591,6 +591,7 @@ func (poca *PerformanceOptimizedCostAnalyzer) getLambdaCostBreakdown(resource co
 	}
 }
 
+//nolint:unused
 func (poca *PerformanceOptimizedCostAnalyzer) getEC2OptimizationTips(resource core.Resource, cost float64) []string {
 	tips := []string{}
 
@@ -604,6 +605,7 @@ func (poca *PerformanceOptimizedCostAnalyzer) getEC2OptimizationTips(resource co
 	return tips
 }
 
+//nolint:unused
 func (poca *PerformanceOptimizedCostAnalyzer) getRDSOptimizationTips(resource core.Resource, cost float64) []string {
 	tips := []string{}
 
