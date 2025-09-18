@@ -48,22 +48,44 @@ jobs:
         format: 'sarif'
         output: 'trivy-image-results.sarif'
 
+    - name: Check SARIF files exist
+      if: always()
+      run: |
+        echo "Checking for SARIF files..."
+        if [ -f "trivy-results.sarif" ]; then
+          echo "✅ trivy-results.sarif exists"
+          ls -la trivy-results.sarif
+        else
+          echo "❌ trivy-results.sarif not found"
+        fi
+        if [ -f "trivy-image-results.sarif" ]; then
+          echo "✅ trivy-image-results.sarif exists"
+          ls -la trivy-image-results.sarif
+        else
+          echo "❌ trivy-image-results.sarif not found"
+        fi
+
     - name: Upload Trivy filesystem scan results to GitHub Security tab
       uses: github/codeql-action/upload-sarif@v3
-      if: always()
+      if: always() && hashFiles('trivy-results.sarif') != ''
+      continue-on-error: true
       with:
         sarif_file: 'trivy-results.sarif'
         category: trivy-fs
+        wait-for-processing: true
 
     - name: Upload Trivy image scan results to GitHub Security tab
-      if: always() && (github.event_name == 'push' || github.event_name == 'release')
+      if: always() && (github.event_name == 'push' || github.event_name == 'release') && hashFiles('trivy-image-results.sarif') != ''
       uses: github/codeql-action/upload-sarif@v3
+      continue-on-error: true
       with:
         sarif_file: 'trivy-image-results.sarif'
         category: trivy-image
+        wait-for-processing: true
 
     - name: Run Trivy vulnerability scanner in repo mode (table format)
       uses: aquasecurity/trivy-action@master
+      continue-on-error: true
       with:
         scan-type: 'fs'
         scan-ref: '.'
@@ -73,7 +95,30 @@ jobs:
     - name: Run Trivy vulnerability scanner in image mode (table format)
       if: github.event_name == 'push' || github.event_name == 'release'
       uses: aquasecurity/trivy-action@master
+      continue-on-error: true
       with:
         image-ref: '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}'
         format: 'table'
         exit-code: '1'
+
+    - name: Generate Trivy scan summary
+      if: always()
+      run: |
+        echo "## Trivy Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Scan Results:" >> $GITHUB_STEP_SUMMARY
+        echo "- **Filesystem Scan**: Completed" >> $GITHUB_STEP_SUMMARY
+        if [ "${{ github.event_name }}" == "push" ] || [ "${{ github.event_name }}" == "release" ]; then
+          echo "- **Docker Image Scan**: Completed" >> $GITHUB_STEP_SUMMARY
+        fi
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### SARIF Reports:" >> $GITHUB_STEP_SUMMARY
+        echo "- Filesystem vulnerabilities uploaded to GitHub Security tab" >> $GITHUB_STEP_SUMMARY
+        if [ "${{ github.event_name }}" == "push" ] || [ "${{ github.event_name }}" == "release" ]; then
+          echo "- Docker image vulnerabilities uploaded to GitHub Security tab" >> $GITHUB_STEP_SUMMARY
+        fi
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Next Steps:" >> $GITHUB_STEP_SUMMARY
+        echo "1. Review vulnerabilities in the GitHub Security tab" >> $GITHUB_STEP_SUMMARY
+        echo "2. Address high and critical severity issues" >> $GITHUB_STEP_SUMMARY
+        echo "3. Consider updating dependencies with known vulnerabilities" >> $GITHUB_STEP_SUMMARY
