@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/cloudrecon/cloudrecon/internal/core"
-	_ "github.com/mattn/go-sqlite3"
+	_ "modernc.org/sqlite"
 )
 
 type SQLiteStorage struct {
@@ -18,7 +18,7 @@ type SQLiteStorage struct {
 
 // NewSQLiteStorage creates a new SQLite storage instance
 func NewSQLiteStorage(databasePath string) (*SQLiteStorage, error) {
-	db, err := sql.Open("sqlite3", databasePath)
+	db, err := sql.Open("sqlite", databasePath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open database: %w", err)
 	}

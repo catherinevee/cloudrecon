@@ -9,11 +9,21 @@ import (
 )
 
 type AzureProvider struct {
+	resourceGraphClient *AzureResourceGraphClient
 }
 
 // NewProvider creates a new Azure provider
 func NewProvider(cfg core.AzureConfig) (*AzureProvider, error) {
-	return &AzureProvider{}, nil
+	// Initialize Resource Graph client
+	resourceGraphClient, err := NewAzureResourceGraphClient()
+	if err != nil {
+		// Log error but don't fail - we can fall back to direct API
+		fmt.Printf("Warning: Failed to initialize Resource Graph client: %v\n", err)
+	}
+
+	return &AzureProvider{
+		resourceGraphClient: resourceGraphClient,
+	}, nil
 }
 
 // Name returns the provider name
@@ -58,13 +68,18 @@ func (p *AzureProvider) ValidateCredentials(ctx context.Context) error {
 
 // IsNativeToolAvailable checks if Azure Resource Graph is available
 func (p *AzureProvider) IsNativeToolAvailable(ctx context.Context, account core.Account) (bool, error) {
-	// For now, return true to use Resource Graph placeholder
-	return true, nil
+	if p.resourceGraphClient == nil {
+		return false, fmt.Errorf("Resource Graph client not initialized")
+	}
+	return p.resourceGraphClient.IsResourceGraphAvailable(ctx)
 }
 
 // DiscoverWithNativeTool uses Azure Resource Graph for discovery
 func (p *AzureProvider) DiscoverWithNativeTool(ctx context.Context, account core.Account) ([]core.Resource, error) {
-	return p.discoverViaResourceGraph(ctx, account)
+	if p.resourceGraphClient == nil {
+		return nil, fmt.Errorf("Resource Graph client not initialized")
+	}
+	return p.resourceGraphClient.DiscoverWithResourceGraph(ctx, account)
 }
 
 // discoverViaDirectAPI falls back to direct API calls
@@ -94,4 +109,3 @@ func (p *AzureProvider) discoverViaDirectAPI(ctx context.Context, account core.A
 	resources = append(resources, resource)
 	return resources, nil
 }
-

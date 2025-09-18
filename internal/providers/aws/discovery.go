@@ -14,9 +14,10 @@ import (
 )
 
 type AWSProvider struct {
-	config      aws.Config
-	credentials core.Credentials
-	cache       core.Cache
+	config       aws.Config
+	credentials  core.Credentials
+	cache        core.Cache
+	configClient *AWSConfigClient
 }
 
 // NewProvider creates a new AWS provider
@@ -28,8 +29,9 @@ func NewProvider(cfg core.AWSConfig) (*AWSProvider, error) {
 	}
 
 	return &AWSProvider{
-		config: awsConfig,
-		cache:  &memoryCache{},
+		config:       awsConfig,
+		cache:        &memoryCache{},
+		configClient: NewAWSConfigClient(awsConfig),
 	}, nil
 }
 
@@ -110,16 +112,12 @@ func (p *AWSProvider) ValidateCredentials(ctx context.Context) error {
 
 // IsNativeToolAvailable checks if AWS Config is available
 func (p *AWSProvider) IsNativeToolAvailable(ctx context.Context, account core.Account) (bool, error) {
-	// For now, return false to use direct API
-	// TODO: Implement AWS Config availability check
-	return false, nil
+	return p.configClient.IsConfigAvailable(ctx)
 }
 
 // DiscoverWithNativeTool uses AWS Config for discovery
 func (p *AWSProvider) DiscoverWithNativeTool(ctx context.Context, account core.Account) ([]core.Resource, error) {
-	// For now, return empty slice
-	// TODO: Implement AWS Config discovery
-	return []core.Resource{}, nil
+	return p.configClient.DiscoverWithConfig(ctx, account)
 }
 
 // discoverAccountsViaOrganizations discovers accounts via Organizations API
@@ -291,8 +289,31 @@ func (p *AWSProvider) discoverAllResources(ctx context.Context, config aws.Confi
 	resources = append(resources, p.discoverRDSResources(ctx, config)...)
 	resources = append(resources, p.discoverIAMResources(ctx, config)...)
 	resources = append(resources, p.discoverLambdaResources(ctx, config)...)
-	resources = append(resources, p.discoverCloudFormationResources(ctx, config)...)
-	resources = append(resources, p.discoverECSResources(ctx, config)...)
+
+	// Service-specific discoveries
+	if cfResources, err := p.DiscoverCloudFormationStacks(ctx, config.Region); err == nil {
+		resources = append(resources, cfResources...)
+	}
+	if ecsResources, err := p.DiscoverECSServices(ctx, config.Region); err == nil {
+		resources = append(resources, ecsResources...)
+	}
+	if elasticacheResources, err := p.DiscoverElastiCacheClusters(ctx, config.Region); err == nil {
+		resources = append(resources, elasticacheResources...)
+	}
+	if lbResources, err := p.DiscoverLoadBalancers(ctx, config.Region); err == nil {
+		resources = append(resources, lbResources...)
+	}
+	if snsResources, err := p.DiscoverSNSTopics(ctx, config.Region); err == nil {
+		resources = append(resources, snsResources...)
+	}
+	if sqsResources, err := p.DiscoverSQSQueues(ctx, config.Region); err == nil {
+		resources = append(resources, sqsResources...)
+	}
+
+	// Global services (Route53)
+	if route53Resources, err := p.DiscoverRoute53Zones(ctx, config.Region); err == nil {
+		resources = append(resources, route53Resources...)
+	}
 
 	return resources
 }

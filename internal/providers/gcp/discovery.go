@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	asset "cloud.google.com/go/asset/apiv1"
 	"cloud.google.com/go/asset/apiv1/assetpb"
 	resourcemanager "cloud.google.com/go/resourcemanager/apiv3"
 	"cloud.google.com/go/resourcemanager/apiv3/resourcemanagerpb"
@@ -15,11 +14,21 @@ import (
 )
 
 type GCPProvider struct {
+	assetInventoryClient *GCPAssetInventoryClient
 }
 
 // NewProvider creates a new GCP provider
 func NewProvider(cfg core.GCPConfig) (*GCPProvider, error) {
-	return &GCPProvider{}, nil
+	ctx := context.Background()
+	assetInventoryClient, err := NewGCPAssetInventoryClient(ctx)
+	if err != nil {
+		logrus.Warnf("Failed to create Asset Inventory client: %v", err)
+		// Continue without Asset Inventory client
+	}
+
+	return &GCPProvider{
+		assetInventoryClient: assetInventoryClient,
+	}, nil
 }
 
 // Name returns the provider name
@@ -113,62 +122,20 @@ func (p *GCPProvider) ValidateCredentials(ctx context.Context) error {
 
 // IsNativeToolAvailable checks if Cloud Asset Inventory is available
 func (p *GCPProvider) IsNativeToolAvailable(ctx context.Context, account core.Account) (bool, error) {
-	client, err := asset.NewClient(ctx)
-	if err != nil {
-		return false, err
-	}
-	defer client.Close()
-
-	// Try to list assets
-	req := &assetpb.ListAssetsRequest{
-		Parent: fmt.Sprintf("projects/%s", account.ID),
-	}
-	it := client.ListAssets(ctx, req)
-	_, err = it.Next()
-	if err != nil && err != iterator.Done {
-		return false, err
+	if p.assetInventoryClient == nil {
+		return false, fmt.Errorf("Asset Inventory client not initialized")
 	}
 
-	return true, nil
+	return p.assetInventoryClient.IsAssetInventoryAvailable(ctx, account.ID)
 }
 
 // DiscoverWithNativeTool uses Cloud Asset Inventory for discovery
 func (p *GCPProvider) DiscoverWithNativeTool(ctx context.Context, account core.Account) ([]core.Resource, error) {
-	client, err := asset.NewClient(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create Asset client: %w", err)
-	}
-	defer client.Close()
-
-	var resources []core.Resource
-
-	// List all assets in the project
-	req := &assetpb.ListAssetsRequest{
-		Parent: fmt.Sprintf("projects/%s", account.ID),
-		AssetTypes: []string{
-			"compute.googleapis.com/Instance",
-			"storage.googleapis.com/Bucket",
-			"sqladmin.googleapis.com/Instance",
-			"iam.googleapis.com/ServiceAccount",
-		},
+	if p.assetInventoryClient == nil {
+		return nil, fmt.Errorf("Asset Inventory client not initialized")
 	}
 
-	it := client.ListAssets(ctx, req)
-	for {
-		asset, err := it.Next()
-		if err == iterator.Done {
-			break
-		}
-		if err != nil {
-			logrus.Warnf("Failed to list assets: %v", err)
-			continue
-		}
-
-		resource := p.parseAssetToResource(asset, account.ID)
-		resources = append(resources, resource)
-	}
-
-	return resources, nil
+	return p.assetInventoryClient.DiscoverWithAssetInventory(ctx, account)
 }
 
 // discoverCurrentProject discovers the current project
@@ -416,4 +383,3 @@ func (p *GCPProvider) extractNameFromAsset(asset *assetpb.Asset) string {
 func (p *GCPProvider) mapDependencies(ctx context.Context, resources []core.Resource) {
 	// TODO: Implement dependency mapping
 }
-
