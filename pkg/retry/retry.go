@@ -112,7 +112,7 @@ func calculateDelay(config *RetryConfig, attempt int) time.Duration {
 		// Generate secure random number between -1 and 1
 		randomBig, _ := rand.Int(rand.Reader, big.NewInt(1000))
 		randomFloat := float64(randomBig.Int64())/1000.0*2 - 1 // -1 to 1
-		jitter := delay * config.Jitter * randomFloat // -jitter to +jitter
+		jitter := delay * config.Jitter * randomFloat          // -jitter to +jitter
 		delay += jitter
 	}
 
