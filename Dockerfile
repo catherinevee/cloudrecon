@@ -39,8 +39,8 @@ WORKDIR /app
 # Copy binary from builder stage
 COPY --from=builder /app/cloudrecon /app/cloudrecon
 
-# Copy configuration files
-COPY --from=builder /app/config/ /app/config/
+# Copy configuration files (if they exist)
+# COPY --from=builder /app/config/ /app/config/
 
 # Change ownership to non-root user
 RUN chown -R cloudrecon:cloudrecon /app
