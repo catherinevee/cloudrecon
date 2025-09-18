@@ -162,10 +162,7 @@ func (s *SQLiteStorage) StoreDiscovery(result *core.DiscoveryResult) error {
 	}()
 
 	// Insert discovery run
-	providers := make([]string, 0, len(result.Providers))
-	for _, p := range result.Providers {
-		providers = append(providers, p)
-	}
+	providers := append([]string(nil), result.Providers...)
 
 	errorsJSON, _ := json.Marshal(result.Errors)
 
@@ -213,10 +210,10 @@ func (s *SQLiteStorage) StoreDiscovery(result *core.DiscoveryResult) error {
 		changeType := "created"
 		if err == nil {
 			changeType = "updated"
-			// Detect actual changes
-			if existingConfig != string(resource.Configuration) {
-				_, _ = changeStmt.Exec(resource.ID, changeType, existingConfig, resource.Configuration)
-			}
+		}
+		// Detect actual changes
+		if err == nil && existingConfig != string(resource.Configuration) {
+			_, _ = changeStmt.Exec(resource.ID, changeType, existingConfig, resource.Configuration)
 		}
 
 		// Store resource

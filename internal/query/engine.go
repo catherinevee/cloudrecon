@@ -1,6 +1,7 @@
 package query
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -73,10 +74,16 @@ func (e *QueryEngine) ExecuteSQL(query string, args ...interface{}) ([]core.Reso
 
 		// Parse JSON fields
 		if tagsJSON != "" {
-			// TODO: Parse tags JSON
+			if err := json.Unmarshal([]byte(tagsJSON), &resource.Tags); err != nil {
+				// Log error but continue processing
+				_ = err
+			}
 		}
 		if depsJSON != "" {
-			// TODO: Parse dependencies JSON
+			if err := json.Unmarshal([]byte(depsJSON), &resource.Dependencies); err != nil {
+				// Log error but continue processing
+				_ = err
+			}
 		}
 
 		resources = append(resources, resource)

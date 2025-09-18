@@ -2,6 +2,7 @@ package cli
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"os"
 	"strconv"
@@ -107,7 +108,7 @@ func (e *EnhancedCLI) runQuickAnalysis() error {
 	fmt.Println(" Analyzing dependencies...")
 	start := time.Now()
 
-	report, err := orchestrator.AnalyzeAllOptimized(nil)
+	report, err := orchestrator.AnalyzeAllOptimized(context.TODO())
 	if err != nil {
 		return err
 	}
@@ -214,7 +215,7 @@ func (e *EnhancedCLI) runCustomAnalysis() error {
 	if includeDeps && includeSecurity && includeCost {
 		// Run comprehensive analysis
 		orchestrator := analysis.NewPerformanceOptimizedAnalysisOrchestrator(e.storage, config)
-		report, err := orchestrator.AnalyzeAllOptimized(nil)
+		report, err := orchestrator.AnalyzeAllOptimized(context.TODO())
 		if err != nil {
 			return err
 		}
@@ -298,7 +299,7 @@ func (e *EnhancedCLI) exportResults() error {
 	orchestrator := analysis.NewPerformanceOptimizedAnalysisOrchestrator(e.storage, config)
 
 	fmt.Println(" Running analysis for export...")
-	report, err := orchestrator.AnalyzeAllOptimized(nil)
+	report, err := orchestrator.AnalyzeAllOptimized(context.TODO())
 	if err != nil {
 		return err
 	}
