@@ -49,7 +49,7 @@ func (e *Exporter) exportJSON(resources []core.Resource, outputPath string) erro
 		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
-	file, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600) //nolint:gosec
+	file, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600) // #nosec G304
 	if err != nil {
 		return fmt.Errorf("failed to create output file: %w", err)
 	}
@@ -68,7 +68,7 @@ func (e *Exporter) exportCSV(resources []core.Resource, outputPath string) error
 		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
-	file, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600) //nolint:gosec
+	file, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600) // #nosec G304
 	if err != nil {
 		return fmt.Errorf("failed to create output file: %w", err)
 	}
@@ -121,7 +121,7 @@ func (e *Exporter) exportYAML(resources []core.Resource, outputPath string) erro
 		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
-	file, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600) //nolint:gosec
+	file, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600) // #nosec G304
 	if err != nil {
 		return fmt.Errorf("failed to create output file: %w", err)
 	}
@@ -143,7 +143,7 @@ func (e *Exporter) exportTerraform(resources []core.Resource, outputPath string)
 		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
-	file, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600) //nolint:gosec
+	file, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600) // #nosec G304
 	if err != nil {
 		return fmt.Errorf("failed to create output file: %w", err)
 	}
@@ -211,7 +211,7 @@ func (e *Exporter) exportGrafana(resources []core.Resource, outputPath string) e
 		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
-	file, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600) //nolint:gosec
+	file, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600) // #nosec G304
 	if err != nil {
 		return fmt.Errorf("failed to create output file: %w", err)
 	}
@@ -283,7 +283,7 @@ func (e *Exporter) exportDatadog(resources []core.Resource, outputPath string) e
 		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
-	file, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600) //nolint:gosec
+	file, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600) // #nosec G304
 	if err != nil {
 		return fmt.Errorf("failed to create output file: %w", err)
 	}
@@ -336,7 +336,7 @@ func (e *Exporter) exportSplunk(resources []core.Resource, outputPath string) er
 		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
-	file, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600) //nolint:gosec
+	file, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600) // #nosec G304
 	if err != nil {
 		return fmt.Errorf("failed to create output file: %w", err)
 	}
