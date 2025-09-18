@@ -14,6 +14,7 @@ import (
 )
 
 // discoverECSResources discovers comprehensive ECS resources
+//
 //nolint:unused
 func (p *AWSProvider) discoverECSResources(ctx context.Context, config aws.Config) []core.Resource {
 	var resources []core.Resource
@@ -34,6 +35,7 @@ func (p *AWSProvider) discoverECSResources(ctx context.Context, config aws.Confi
 }
 
 // discoverECSClusters discovers ECS clusters
+//
 //nolint:unused
 func (p *AWSProvider) discoverECSClusters(ctx context.Context, config aws.Config) []core.Resource {
 	client := ecs.NewFromConfig(config)
@@ -92,6 +94,7 @@ func (p *AWSProvider) discoverECSClusters(ctx context.Context, config aws.Config
 }
 
 // discoverECSServices discovers ECS services
+//
 //nolint:unused
 func (p *AWSProvider) discoverECSServices(ctx context.Context, config aws.Config) []core.Resource {
 	client := ecs.NewFromConfig(config)
@@ -149,6 +152,7 @@ func (p *AWSProvider) discoverECSServices(ctx context.Context, config aws.Config
 }
 
 // discoverECSTaskDefinitions discovers ECS task definitions
+//
 //nolint:unused
 func (p *AWSProvider) discoverECSTaskDefinitions(ctx context.Context, config aws.Config) []core.Resource {
 	client := ecs.NewFromConfig(config)
@@ -207,6 +211,7 @@ func (p *AWSProvider) discoverECSTaskDefinitions(ctx context.Context, config aws
 }
 
 // discoverECSTasks discovers ECS tasks
+//
 //nolint:unused
 func (p *AWSProvider) discoverECSTasks(ctx context.Context, config aws.Config) []core.Resource {
 	client := ecs.NewFromConfig(config)
@@ -263,6 +268,7 @@ func (p *AWSProvider) discoverECSTasks(ctx context.Context, config aws.Config) [
 }
 
 // Helper methods for ECS resources
+//
 //nolint:unused
 func (p *AWSProvider) getECSClusterDetails(ctx context.Context, client *ecs.Client, clusterArn string) (*ecsTypes.Cluster, error) {
 	result, err := client.DescribeClusters(ctx, &ecs.DescribeClustersInput{

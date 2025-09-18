@@ -13,6 +13,7 @@ import (
 )
 
 // discoverCloudFormationResources discovers comprehensive CloudFormation resources
+//
 //nolint:unused
 func (p *AWSProvider) discoverCloudFormationResources(ctx context.Context, config aws.Config) []core.Resource {
 	var resources []core.Resource
@@ -30,6 +31,7 @@ func (p *AWSProvider) discoverCloudFormationResources(ctx context.Context, confi
 }
 
 // discoverCloudFormationStacks discovers CloudFormation stacks
+//
 //nolint:unused
 func (p *AWSProvider) discoverCloudFormationStacks(ctx context.Context, config aws.Config) []core.Resource {
 	client := cloudformation.NewFromConfig(config)
@@ -85,6 +87,7 @@ func (p *AWSProvider) discoverCloudFormationStacks(ctx context.Context, config a
 }
 
 // discoverCloudFormationStackSets discovers CloudFormation stack sets
+//
 //nolint:unused
 func (p *AWSProvider) discoverCloudFormationStackSets(ctx context.Context, config aws.Config) []core.Resource {
 	client := cloudformation.NewFromConfig(config)
@@ -133,6 +136,7 @@ func (p *AWSProvider) discoverCloudFormationStackSets(ctx context.Context, confi
 }
 
 // discoverCloudFormationChangeSets discovers CloudFormation change sets
+//
 //nolint:unused
 func (p *AWSProvider) discoverCloudFormationChangeSets(ctx context.Context, config aws.Config) []core.Resource {
 	client := cloudformation.NewFromConfig(config)
@@ -188,6 +192,7 @@ func (p *AWSProvider) discoverCloudFormationChangeSets(ctx context.Context, conf
 }
 
 // Helper methods for CloudFormation resources
+//
 //nolint:unused
 func (p *AWSProvider) getAllCloudFormationStacks(ctx context.Context, client *cloudformation.Client) ([]cfTypes.StackSummary, error) {
 	var stacks []cfTypes.StackSummary
