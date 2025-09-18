@@ -326,6 +326,7 @@ func (p *GCPProvider) discoverAssetInventoryResources(ctx context.Context, proje
 // Helper methods for resource discovery
 
 // parseAssetToResource converts a Cloud Asset to a Resource
+//
 //nolint:unused
 func (p *GCPProvider) parseAssetToResource(asset *assetpb.Asset, projectID string) core.Resource {
 	resource := core.Resource{
@@ -354,6 +355,7 @@ func (p *GCPProvider) parseAssetToResource(asset *assetpb.Asset, projectID strin
 }
 
 // Helper methods for parsing assets
+//
 //nolint:unused
 func (p *GCPProvider) extractRegionFromAsset(asset *assetpb.Asset) string {
 	// Extract region from asset name
