@@ -389,7 +389,7 @@ func createAnalyzeCmd() *cobra.Command {
 			orchestrator := analysis.NewAnalysisOrchestrator(storage)
 
 			// Run comprehensive analysis
-			report, err := orchestrator.AnalyzeAll(nil)
+			report, err := orchestrator.AnalyzeAll(context.TODO())
 			if err != nil {
 				return fmt.Errorf("analysis failed: %w", err)
 			}
@@ -425,7 +425,7 @@ func createSecurityCmd() *cobra.Command {
 			analyzer := analysis.NewSecurityAnalyzer(storage)
 
 			// Run security analysis
-			report, err := analyzer.AnalyzeSecurity(nil)
+			report, err := analyzer.AnalyzeSecurity(context.TODO())
 			if err != nil {
 				return fmt.Errorf("security analysis failed: %w", err)
 			}
@@ -462,7 +462,7 @@ func createCostCmd() *cobra.Command {
 			analyzer := analysis.NewCostAnalyzer(storage)
 
 			// Run cost analysis
-			report, err := analyzer.AnalyzeCost(nil)
+			report, err := analyzer.AnalyzeCost(context.TODO())
 			if err != nil {
 				return fmt.Errorf("cost analysis failed: %w", err)
 			}
@@ -498,7 +498,7 @@ func createDependenciesCmd() *cobra.Command {
 			analyzer := analysis.NewDependencyAnalyzer(storage)
 
 			// Run dependency analysis
-			graph, err := analyzer.AnalyzeDependencies(nil)
+			graph, err := analyzer.AnalyzeDependencies(context.TODO())
 			if err != nil {
 				return fmt.Errorf("dependency analysis failed: %w", err)
 			}
