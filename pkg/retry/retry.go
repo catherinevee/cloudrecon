@@ -2,9 +2,10 @@ package retry
 
 import (
 	"context"
+	"crypto/rand"
 	"fmt"
 	"math"
-	"math/rand"
+	"math/big"
 	"time"
 )
 
@@ -108,7 +109,10 @@ func calculateDelay(config *RetryConfig, attempt int) time.Duration {
 
 	// Apply jitter to prevent thundering herd
 	if config.Jitter > 0 {
-		jitter := delay * config.Jitter * (rand.Float64()*2 - 1) // -jitter to +jitter
+		// Generate secure random number between -1 and 1
+		randomBig, _ := rand.Int(rand.Reader, big.NewInt(1000))
+		randomFloat := float64(randomBig.Int64())/1000.0*2 - 1 // -1 to 1
+		jitter := delay * config.Jitter * randomFloat // -jitter to +jitter
 		delay += jitter
 	}
 

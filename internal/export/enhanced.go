@@ -34,7 +34,7 @@ func (ee *EnhancedExporter) ExportHTMLReport(report *analysis.ComprehensiveAnaly
 	}
 
 	// Ensure output directory exists
-	if err := os.MkdirAll(ee.outputDir, 0755); err != nil {
+	if err := os.MkdirAll(ee.outputDir, 0750); err != nil {
 		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
@@ -47,7 +47,7 @@ func (ee *EnhancedExporter) ExportHTMLReport(report *analysis.ComprehensiveAnaly
 	}
 
 	// Write to file
-	if err := os.WriteFile(filepath, []byte(htmlContent), 0644); err != nil {
+	if err := os.WriteFile(filepath, []byte(htmlContent), 0600); err != nil {
 		return fmt.Errorf("failed to write HTML file: %w", err)
 	}
 
@@ -62,7 +62,7 @@ func (ee *EnhancedExporter) ExportPDFReport(report *analysis.ComprehensiveAnalys
 	}
 
 	// Ensure output directory exists
-	if err := os.MkdirAll(ee.outputDir, 0755); err != nil {
+	if err := os.MkdirAll(ee.outputDir, 0750); err != nil {
 		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
@@ -76,7 +76,7 @@ func (ee *EnhancedExporter) ExportPDFReport(report *analysis.ComprehensiveAnalys
 	}
 
 	// Write to file
-	if err := os.WriteFile(filepath, []byte(htmlContent), 0644); err != nil {
+	if err := os.WriteFile(filepath, []byte(htmlContent), 0600); err != nil {
 		return fmt.Errorf("failed to write PDF file: %w", err)
 	}
 
@@ -538,7 +538,7 @@ func (ee *EnhancedExporter) ExportJSONReport(report *analysis.ComprehensiveAnaly
 	}
 
 	// Ensure output directory exists
-	if err := os.MkdirAll(ee.outputDir, 0755); err != nil {
+	if err := os.MkdirAll(ee.outputDir, 0750); err != nil {
 		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
@@ -551,7 +551,7 @@ func (ee *EnhancedExporter) ExportJSONReport(report *analysis.ComprehensiveAnaly
 	}
 
 	// Write to file
-	if err := os.WriteFile(filepath, jsonData, 0644); err != nil {
+	if err := os.WriteFile(filepath, jsonData, 0600); err != nil {
 		return fmt.Errorf("failed to write JSON file: %w", err)
 	}
 

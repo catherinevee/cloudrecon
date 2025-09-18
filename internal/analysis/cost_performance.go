@@ -617,6 +617,7 @@ func (poca *PerformanceOptimizedCostAnalyzer) getRDSOptimizationTips(resource co
 	return tips
 }
 
+//nolint:unused
 func (poca *PerformanceOptimizedCostAnalyzer) getS3OptimizationTips(resource core.Resource, cost float64) []string {
 	tips := []string{}
 
@@ -630,6 +631,7 @@ func (poca *PerformanceOptimizedCostAnalyzer) getS3OptimizationTips(resource cor
 	return tips
 }
 
+//nolint:unused
 func (poca *PerformanceOptimizedCostAnalyzer) getLambdaOptimizationTips(resource core.Resource, cost float64) []string {
 	tips := []string{}
 

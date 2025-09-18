@@ -79,7 +79,7 @@ func (e *EnhancedCLI) InteractiveAnalysisMode() error {
 				fmt.Printf("Error: Error: %v\n", err)
 			}
 		case "7":
-			e.showCacheStatistics()
+			_ = e.showCacheStatistics()
 		case "8":
 			fmt.Println("Goodbye!")
 			return nil

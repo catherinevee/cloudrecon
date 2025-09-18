@@ -25,7 +25,7 @@ func NewSQLiteStorage(databasePath string) (*SQLiteStorage, error) {
 
 	storage := &SQLiteStorage{db: db}
 	if err := storage.Initialize(); err != nil {
-		db.Close()
+		_ = db.Close()
 		return nil, fmt.Errorf("failed to initialize database: %w", err)
 	}
 

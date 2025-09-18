@@ -45,11 +45,11 @@ func (e *Exporter) Export(resources []core.Resource, format, outputPath string) 
 // exportJSON exports resources to JSON format
 func (e *Exporter) exportJSON(resources []core.Resource, outputPath string) error {
 	// Create output directory if it doesn't exist
-	if err := os.MkdirAll(filepath.Dir(outputPath), 0755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(outputPath), 0750); err != nil {
 		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
-	file, err := os.Create(outputPath)
+	file, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600)
 	if err != nil {
 		return fmt.Errorf("failed to create output file: %w", err)
 	}
@@ -64,11 +64,11 @@ func (e *Exporter) exportJSON(resources []core.Resource, outputPath string) erro
 // exportCSV exports resources to CSV format
 func (e *Exporter) exportCSV(resources []core.Resource, outputPath string) error {
 	// Create output directory if it doesn't exist
-	if err := os.MkdirAll(filepath.Dir(outputPath), 0755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(outputPath), 0750); err != nil {
 		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
-	file, err := os.Create(outputPath)
+	file, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600)
 	if err != nil {
 		return fmt.Errorf("failed to create output file: %w", err)
 	}
@@ -117,11 +117,11 @@ func (e *Exporter) exportCSV(resources []core.Resource, outputPath string) error
 // exportYAML exports resources to YAML format
 func (e *Exporter) exportYAML(resources []core.Resource, outputPath string) error {
 	// Create output directory if it doesn't exist
-	if err := os.MkdirAll(filepath.Dir(outputPath), 0755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(outputPath), 0750); err != nil {
 		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
-	file, err := os.Create(outputPath)
+	file, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600)
 	if err != nil {
 		return fmt.Errorf("failed to create output file: %w", err)
 	}
@@ -139,11 +139,11 @@ func (e *Exporter) exportYAML(resources []core.Resource, outputPath string) erro
 // exportTerraform exports resources to Terraform state format
 func (e *Exporter) exportTerraform(resources []core.Resource, outputPath string) error {
 	// Create output directory if it doesn't exist
-	if err := os.MkdirAll(filepath.Dir(outputPath), 0755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(outputPath), 0750); err != nil {
 		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
-	file, err := os.Create(outputPath)
+	file, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600)
 	if err != nil {
 		return fmt.Errorf("failed to create output file: %w", err)
 	}
@@ -207,11 +207,11 @@ func (e *Exporter) exportTerraform(resources []core.Resource, outputPath string)
 // exportGrafana exports resources to Grafana dashboard format
 func (e *Exporter) exportGrafana(resources []core.Resource, outputPath string) error {
 	// Create output directory if it doesn't exist
-	if err := os.MkdirAll(filepath.Dir(outputPath), 0755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(outputPath), 0750); err != nil {
 		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
-	file, err := os.Create(outputPath)
+	file, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600)
 	if err != nil {
 		return fmt.Errorf("failed to create output file: %w", err)
 	}
@@ -279,11 +279,11 @@ func (e *Exporter) exportGrafana(resources []core.Resource, outputPath string) e
 // exportDatadog exports resources to Datadog format
 func (e *Exporter) exportDatadog(resources []core.Resource, outputPath string) error {
 	// Create output directory if it doesn't exist
-	if err := os.MkdirAll(filepath.Dir(outputPath), 0755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(outputPath), 0750); err != nil {
 		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
-	file, err := os.Create(outputPath)
+	file, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600)
 	if err != nil {
 		return fmt.Errorf("failed to create output file: %w", err)
 	}
@@ -332,11 +332,11 @@ func (e *Exporter) exportDatadog(resources []core.Resource, outputPath string) e
 // exportSplunk exports resources to Splunk format
 func (e *Exporter) exportSplunk(resources []core.Resource, outputPath string) error {
 	// Create output directory if it doesn't exist
-	if err := os.MkdirAll(filepath.Dir(outputPath), 0755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(outputPath), 0750); err != nil {
 		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
-	file, err := os.Create(outputPath)
+	file, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600)
 	if err != nil {
 		return fmt.Errorf("failed to create output file: %w", err)
 	}
