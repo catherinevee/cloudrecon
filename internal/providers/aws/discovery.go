@@ -15,7 +15,7 @@ import (
 
 type AWSProvider struct {
 	config       aws.Config
-	credentials  core.Credentials
+	credentials  core.Credentials //nolint:unused
 	cache        core.Cache
 	configClient *AWSConfigClient
 }

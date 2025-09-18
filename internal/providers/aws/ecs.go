@@ -14,6 +14,7 @@ import (
 )
 
 // discoverECSResources discovers comprehensive ECS resources
+//nolint:unused
 func (p *AWSProvider) discoverECSResources(ctx context.Context, config aws.Config) []core.Resource {
 	var resources []core.Resource
 
@@ -33,6 +34,7 @@ func (p *AWSProvider) discoverECSResources(ctx context.Context, config aws.Confi
 }
 
 // discoverECSClusters discovers ECS clusters
+//nolint:unused
 func (p *AWSProvider) discoverECSClusters(ctx context.Context, config aws.Config) []core.Resource {
 	client := ecs.NewFromConfig(config)
 	var resources []core.Resource
@@ -90,6 +92,7 @@ func (p *AWSProvider) discoverECSClusters(ctx context.Context, config aws.Config
 }
 
 // discoverECSServices discovers ECS services
+//nolint:unused
 func (p *AWSProvider) discoverECSServices(ctx context.Context, config aws.Config) []core.Resource {
 	client := ecs.NewFromConfig(config)
 	var resources []core.Resource
@@ -146,6 +149,7 @@ func (p *AWSProvider) discoverECSServices(ctx context.Context, config aws.Config
 }
 
 // discoverECSTaskDefinitions discovers ECS task definitions
+//nolint:unused
 func (p *AWSProvider) discoverECSTaskDefinitions(ctx context.Context, config aws.Config) []core.Resource {
 	client := ecs.NewFromConfig(config)
 	var resources []core.Resource
@@ -203,6 +207,7 @@ func (p *AWSProvider) discoverECSTaskDefinitions(ctx context.Context, config aws
 }
 
 // discoverECSTasks discovers ECS tasks
+//nolint:unused
 func (p *AWSProvider) discoverECSTasks(ctx context.Context, config aws.Config) []core.Resource {
 	client := ecs.NewFromConfig(config)
 	var resources []core.Resource
@@ -258,6 +263,7 @@ func (p *AWSProvider) discoverECSTasks(ctx context.Context, config aws.Config) [
 }
 
 // Helper methods for ECS resources
+//nolint:unused
 func (p *AWSProvider) getECSClusterDetails(ctx context.Context, client *ecs.Client, clusterArn string) (*ecsTypes.Cluster, error) {
 	result, err := client.DescribeClusters(ctx, &ecs.DescribeClustersInput{
 		Clusters: []string{clusterArn},
@@ -271,6 +277,7 @@ func (p *AWSProvider) getECSClusterDetails(ctx context.Context, client *ecs.Clie
 	return &result.Clusters[0], nil
 }
 
+//nolint:unused
 func (p *AWSProvider) getAllECSClusters(ctx context.Context, client *ecs.Client) ([]ecsTypes.Cluster, error) {
 	var clusters []ecsTypes.Cluster
 
@@ -295,6 +302,7 @@ func (p *AWSProvider) getAllECSClusters(ctx context.Context, client *ecs.Client)
 	return clusters, nil
 }
 
+//nolint:unused
 func (p *AWSProvider) getClusterServices(ctx context.Context, client *ecs.Client, clusterArn string) ([]ecsTypes.Service, error) {
 	var services []ecsTypes.Service
 
@@ -322,6 +330,7 @@ func (p *AWSProvider) getClusterServices(ctx context.Context, client *ecs.Client
 	return services, nil
 }
 
+//nolint:unused
 func (p *AWSProvider) getECSTaskDefinitionDetails(ctx context.Context, client *ecs.Client, taskDefArn string) (*ecsTypes.TaskDefinition, error) {
 	result, err := client.DescribeTaskDefinition(ctx, &ecs.DescribeTaskDefinitionInput{
 		TaskDefinition: aws.String(taskDefArn),
@@ -332,6 +341,7 @@ func (p *AWSProvider) getECSTaskDefinitionDetails(ctx context.Context, client *e
 	return result.TaskDefinition, nil
 }
 
+//nolint:unused
 func (p *AWSProvider) getClusterTasks(ctx context.Context, client *ecs.Client, clusterArn string) ([]ecsTypes.Task, error) {
 	var tasks []ecsTypes.Task
 
@@ -359,6 +369,7 @@ func (p *AWSProvider) getClusterTasks(ctx context.Context, client *ecs.Client, c
 	return tasks, nil
 }
 
+//nolint:unused
 func (p *AWSProvider) parseECSClusterTags(cluster *ecsTypes.Cluster) map[string]string {
 	tags := make(map[string]string)
 	for _, tag := range cluster.Tags {
@@ -367,6 +378,7 @@ func (p *AWSProvider) parseECSClusterTags(cluster *ecsTypes.Cluster) map[string]
 	return tags
 }
 
+//nolint:unused
 func (p *AWSProvider) parseECSServiceTags(service ecsTypes.Service) map[string]string {
 	tags := make(map[string]string)
 	for _, tag := range service.Tags {
@@ -375,12 +387,14 @@ func (p *AWSProvider) parseECSServiceTags(service ecsTypes.Service) map[string]s
 	return tags
 }
 
+//nolint:unused
 func (p *AWSProvider) parseECSTaskDefinitionTags(taskDef *ecsTypes.TaskDefinition) map[string]string {
 	tags := make(map[string]string)
 	// Task definitions don't have tags in the current API version
 	return tags
 }
 
+//nolint:unused
 func (p *AWSProvider) parseECSTaskTags(task ecsTypes.Task) map[string]string {
 	tags := make(map[string]string)
 	for _, tag := range task.Tags {

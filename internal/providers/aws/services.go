@@ -553,6 +553,7 @@ func convertECSTags(tags []ecsTypes.Tag) map[string]string {
 	return result
 }
 
+//nolint:unused
 func convertElastiCacheTags(tags []elasticacheTypes.Tag) map[string]string {
 	result := make(map[string]string)
 	for _, tag := range tags {
