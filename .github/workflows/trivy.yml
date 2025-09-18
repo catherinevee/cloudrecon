@@ -48,14 +48,19 @@ jobs:
         format: 'sarif'
         output: 'trivy-image-results.sarif'
 
-    - name: Upload Trivy scan results to GitHub Security tab
+    - name: Upload Trivy filesystem scan results to GitHub Security tab
       uses: github/codeql-action/upload-sarif@v3
       if: always()
       with:
-        sarif_file: |
-          trivy-results.sarif
-          trivy-image-results.sarif
-        category: trivy
+        sarif_file: 'trivy-results.sarif'
+        category: trivy-fs
+
+    - name: Upload Trivy image scan results to GitHub Security tab
+      if: always() && (github.event_name == 'push' || github.event_name == 'release')
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: 'trivy-image-results.sarif'
+        category: trivy-image
 
     - name: Run Trivy vulnerability scanner in repo mode (table format)
       uses: aquasecurity/trivy-action@master
