@@ -3,6 +3,9 @@ package gcp
 import (
 	"context"
 	"fmt"
+	"os"
+	"os/exec"
+	"strings"
 	"time"
 
 	"cloud.google.com/go/asset/apiv1/assetpb"
@@ -14,6 +17,7 @@ import (
 )
 
 type GCPProvider struct {
+	config               core.GCPConfig
 	assetInventoryClient *GCPAssetInventoryClient
 }
 
@@ -27,6 +31,7 @@ func NewProvider(cfg core.GCPConfig) (*GCPProvider, error) {
 	}
 
 	return &GCPProvider{
+		config:               cfg,
 		assetInventoryClient: assetInventoryClient,
 	}, nil
 }
@@ -36,51 +41,37 @@ func (p *GCPProvider) Name() string {
 	return "gcp"
 }
 
-// DiscoverAccounts discovers all GCP projects
+// DiscoverAccounts discovers all GCP projects using multiple fallback methods
 func (p *GCPProvider) DiscoverAccounts(ctx context.Context) ([]core.Account, error) {
-	var accounts []core.Account
-
-	// Try Resource Manager API first
-	client, err := resourcemanager.NewProjectsClient(ctx)
-	if err != nil {
-		logrus.Warnf("Failed to create Resource Manager client: %v", err)
-		return p.discoverCurrentProject(ctx)
-	}
-	defer client.Close()
-
-	// List all projects
-	req := &resourcemanagerpb.ListProjectsRequest{}
-	it := client.ListProjects(ctx, req)
-
-	for {
-		project, err := it.Next()
-		if err == iterator.Done {
-			break
-		}
-		if err != nil {
-			logrus.Warnf("Failed to list projects: %v", err)
-			continue
-		}
-
-		account := core.Account{
-			ID:       project.ProjectId,
-			Provider: "gcp",
-			Name:     project.DisplayName,
-			Type:     "project",
-			Tags: map[string]string{
-				"lifecycle_state": project.State.String(),
-				"project_id":      project.ProjectId,
-			},
-		}
-
-		accounts = append(accounts, account)
+	// Use configured discovery methods or default order
+	methods := p.config.DiscoveryMethods
+	if len(methods) == 0 {
+		methods = []string{"config", "environment", "gcloud", "metadata", "resource_manager"}
 	}
 
-	if len(accounts) == 0 {
-		return p.discoverCurrentProject(ctx)
+	methodMap := map[string]func(context.Context) ([]core.Account, error){
+		"config":           p.discoverFromConfig,
+		"environment":      p.discoverFromEnvironment,
+		"gcloud":           p.discoverFromGCloudConfig,
+		"metadata":         p.discoverFromMetadataServer,
+		"resource_manager": p.discoverFromResourceManager,
 	}
 
-	return accounts, nil
+	for _, methodName := range methods {
+		if method, exists := methodMap[methodName]; exists {
+			logrus.Debugf("Trying GCP project discovery method: %s", methodName)
+			if accounts, err := method(ctx); err == nil && len(accounts) > 0 {
+				logrus.Infof("Successfully discovered %d GCP projects using method: %s", len(accounts), methodName)
+				return accounts, nil
+			} else if err != nil {
+				logrus.Debugf("Method %s failed: %v", methodName, err)
+			}
+		} else {
+			logrus.Warnf("Unknown discovery method: %s", methodName)
+		}
+	}
+
+	return nil, fmt.Errorf("unable to discover GCP projects with any method. Please ensure GCP credentials are properly configured")
 }
 
 // DiscoverResources discovers resources in a project
@@ -138,21 +129,161 @@ func (p *GCPProvider) DiscoverWithNativeTool(ctx context.Context, account core.A
 	return p.assetInventoryClient.DiscoverWithAssetInventory(ctx, account)
 }
 
-// discoverCurrentProject discovers the current project
-func (p *GCPProvider) discoverCurrentProject(ctx context.Context) ([]core.Account, error) {
-	// Try to get current project from metadata server or environment
-	// For now, return a placeholder
+// discoverFromConfig discovers project from configuration
+func (p *GCPProvider) discoverFromConfig(ctx context.Context) ([]core.Account, error) {
+	if p.config.ProjectID == "" {
+		return nil, fmt.Errorf("no project_id specified in configuration")
+	}
+
+	// Validate that we can access this project
+	if err := p.validateProjectAccess(ctx, p.config.ProjectID); err != nil {
+		return nil, fmt.Errorf("cannot access configured project %s: %w", p.config.ProjectID, err)
+	}
+
 	account := core.Account{
-		ID:       "placeholder-project-id",
+		ID:       p.config.ProjectID,
 		Provider: "gcp",
-		Name:     "Placeholder Project",
+		Name:     p.config.ProjectID, // Use project ID as name if we can't get display name
 		Type:     "project",
 		Tags: map[string]string{
-			"project_number": "123456789",
+			"discovery_method": "config",
 		},
 	}
 
 	return []core.Account{account}, nil
+}
+
+// discoverFromEnvironment discovers project from environment variables
+func (p *GCPProvider) discoverFromEnvironment(ctx context.Context) ([]core.Account, error) {
+	projectID := os.Getenv("GOOGLE_CLOUD_PROJECT")
+	if projectID == "" {
+		return nil, fmt.Errorf("GOOGLE_CLOUD_PROJECT environment variable not set")
+	}
+
+	// Validate that we can access this project
+	if err := p.validateProjectAccess(ctx, projectID); err != nil {
+		return nil, fmt.Errorf("cannot access project %s: %w", projectID, err)
+	}
+
+	account := core.Account{
+		ID:       projectID,
+		Provider: "gcp",
+		Name:     projectID, // Use project ID as name if we can't get display name
+		Type:     "project",
+		Tags: map[string]string{
+			"discovery_method": "environment",
+		},
+	}
+
+	return []core.Account{account}, nil
+}
+
+// discoverFromGCloudConfig discovers project from gcloud configuration
+func (p *GCPProvider) discoverFromGCloudConfig(ctx context.Context) ([]core.Account, error) {
+	cmd := exec.CommandContext(ctx, "gcloud", "config", "get-value", "project")
+	output, err := cmd.Output()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get gcloud project: %w", err)
+	}
+
+	projectID := strings.TrimSpace(string(output))
+	if projectID == "" || projectID == "(unset)" {
+		return nil, fmt.Errorf("gcloud project not set")
+	}
+
+	// Validate that we can access this project
+	if err := p.validateProjectAccess(ctx, projectID); err != nil {
+		return nil, fmt.Errorf("cannot access project %s: %w", projectID, err)
+	}
+
+	account := core.Account{
+		ID:       projectID,
+		Provider: "gcp",
+		Name:     projectID,
+		Type:     "project",
+		Tags: map[string]string{
+			"discovery_method": "gcloud_config",
+		},
+	}
+
+	return []core.Account{account}, nil
+}
+
+// discoverFromMetadataServer discovers project from GCP metadata server
+func (p *GCPProvider) discoverFromMetadataServer(ctx context.Context) ([]core.Account, error) {
+	// This would work if running on GCP Compute Engine, Cloud Run, etc.
+	// For now, we'll skip this method as it requires specific GCP environment
+	return nil, fmt.Errorf("metadata server discovery not implemented")
+}
+
+// discoverFromResourceManager discovers projects using Resource Manager API
+func (p *GCPProvider) discoverFromResourceManager(ctx context.Context) ([]core.Account, error) {
+	client, err := resourcemanager.NewProjectsClient(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create Resource Manager client: %w", err)
+	}
+	defer client.Close()
+
+	// Try to list projects without parent first (requires proper permissions)
+	req := &resourcemanagerpb.ListProjectsRequest{}
+	it := client.ListProjects(ctx, req)
+
+	var accounts []core.Account
+	for {
+		project, err := it.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			// If we get permission errors, try with a more specific approach
+			if strings.Contains(err.Error(), "permission") || strings.Contains(err.Error(), "invalid parent") {
+				return nil, fmt.Errorf("insufficient permissions to list projects: %w", err)
+			}
+			logrus.Warnf("Failed to get project from iterator: %v", err)
+			continue
+		}
+
+		account := core.Account{
+			ID:       project.ProjectId,
+			Provider: "gcp",
+			Name:     project.DisplayName,
+			Type:     "project",
+			Tags: map[string]string{
+				"lifecycle_state":  project.State.String(),
+				"project_id":       project.ProjectId,
+				"discovery_method": "resource_manager",
+			},
+		}
+
+		accounts = append(accounts, account)
+	}
+
+	if len(accounts) == 0 {
+		return nil, fmt.Errorf("no projects found via Resource Manager API")
+	}
+
+	return accounts, nil
+}
+
+// validateProjectAccess validates that we can access a specific project
+func (p *GCPProvider) validateProjectAccess(ctx context.Context, projectID string) error {
+	client, err := resourcemanager.NewProjectsClient(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to create Resource Manager client: %w", err)
+	}
+	defer client.Close()
+
+	// Try to get the specific project
+	req := &resourcemanagerpb.GetProjectRequest{
+		Name: fmt.Sprintf("projects/%s", projectID),
+	}
+
+	_, err = client.GetProject(ctx, req)
+	if err != nil {
+		return fmt.Errorf("cannot access project %s: %w", projectID, err)
+	}
+
+	return nil
 }
 
 // discoverViaDirectAPI falls back to direct API calls

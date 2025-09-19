@@ -127,35 +127,66 @@ type DiscoveryOptions struct {
 
 // Config represents the application configuration
 type Config struct {
-	Storage StorageConfig `yaml:"storage"`
-	AWS     AWSConfig     `yaml:"aws"`
-	Azure   AzureConfig   `yaml:"azure"`
-	GCP     GCPConfig     `yaml:"gcp"`
+	Storage   StorageConfig   `yaml:"storage"`
+	AWS       AWSConfig       `yaml:"aws"`
+	Azure     AzureConfig     `yaml:"azure"`
+	GCP       GCPConfig       `yaml:"gcp"`
+	Discovery DiscoveryConfig `yaml:"discovery"`
+	Analysis  AnalysisConfig  `yaml:"analysis"`
+	Logging   LoggingConfig   `yaml:"logging"`
 }
 
 // StorageConfig represents storage configuration
 type StorageConfig struct {
-	DatabasePath string `yaml:"database_path"`
-	CacheSize    int    `yaml:"cache_size"`
+	DatabasePath      string `yaml:"database_path" mapstructure:"database_path"`
+	CacheSize         int    `yaml:"cache_size" mapstructure:"cache_size"`
+	MaxConnections    int    `yaml:"max_connections" mapstructure:"max_connections"`
+	ConnectionTimeout string `yaml:"connection_timeout" mapstructure:"connection_timeout"`
 }
 
 // AWSConfig represents AWS configuration
 type AWSConfig struct {
-	Regions    []string `yaml:"regions"`
-	MaxRetries int      `yaml:"max_retries"`
-	Timeout    string   `yaml:"timeout"`
+	Regions    []string `yaml:"regions" mapstructure:"regions"`
+	MaxRetries int      `yaml:"max_retries" mapstructure:"max_retries"`
+	Timeout    string   `yaml:"timeout" mapstructure:"timeout"`
 }
 
 // AzureConfig represents Azure configuration
 type AzureConfig struct {
-	Subscriptions []string `yaml:"subscriptions"`
-	MaxRetries    int      `yaml:"max_retries"`
-	Timeout       string   `yaml:"timeout"`
+	Subscriptions []string `yaml:"subscriptions" mapstructure:"subscriptions"`
+	MaxRetries    int      `yaml:"max_retries" mapstructure:"max_retries"`
+	Timeout       string   `yaml:"timeout" mapstructure:"timeout"`
 }
 
 // GCPConfig represents GCP configuration
 type GCPConfig struct {
-	Projects   []string `yaml:"projects"`
-	MaxRetries int      `yaml:"max_retries"`
-	Timeout    string   `yaml:"timeout"`
+	ProjectID        string   `yaml:"project_id" mapstructure:"project_id"`
+	OrganizationID   string   `yaml:"organization_id" mapstructure:"organization_id"`
+	CredentialsPath  string   `yaml:"credentials_path" mapstructure:"credentials_path"`
+	Projects         []string `yaml:"projects" mapstructure:"projects"`
+	MaxRetries       int      `yaml:"max_retries" mapstructure:"max_retries"`
+	Timeout          string   `yaml:"timeout" mapstructure:"timeout"`
+	DiscoveryMethods []string `yaml:"discovery_methods" mapstructure:"discovery_methods"`
+}
+
+// DiscoveryConfig represents discovery configuration
+type DiscoveryConfig struct {
+	MaxParallel     int    `yaml:"max_parallel" mapstructure:"max_parallel"`
+	Timeout         string `yaml:"timeout" mapstructure:"timeout"`
+	UseNativeTools  bool   `yaml:"use_native_tools" mapstructure:"use_native_tools"`
+}
+
+// AnalysisConfig represents analysis configuration
+type AnalysisConfig struct {
+	EnableCostAnalysis       bool `yaml:"enable_cost_analysis" mapstructure:"enable_cost_analysis"`
+	EnableSecurityAnalysis   bool `yaml:"enable_security_analysis" mapstructure:"enable_security_analysis"`
+	EnableDependencyAnalysis bool `yaml:"enable_dependency_analysis" mapstructure:"enable_dependency_analysis"`
+	CacheResults            bool `yaml:"cache_results" mapstructure:"cache_results"`
+}
+
+// LoggingConfig represents logging configuration
+type LoggingConfig struct {
+	Level  string `yaml:"level" mapstructure:"level"`
+	Format string `yaml:"format" mapstructure:"format"`
+	Output string `yaml:"output" mapstructure:"output"`
 }

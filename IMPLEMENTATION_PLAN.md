@@ -1,330 +1,795 @@
 # CloudRecon Implementation Plan
 
-## Current Status: Phase 1 Complete (MVP) + Phase 2 Complete (Intelligence Layer) + Phase 3 Complete (Advanced Features) + Testing & Quality Complete
+## Current Status: CRITICAL ISSUES IDENTIFIED - COMPREHENSIVE FIX PLAN
 
-### COMPLETED **COMPLETED TASKS**
+### **🚨 CRITICAL ISSUES DISCOVERED**
 
-#### **Phase 1: MVP (Weeks 1-6)** COMPLETED **COMPLETED**
-- [x] **Core Framework**: Multi-cloud credential management, plugin architecture, SQLite schema
-- [x] **AWS Discovery**: AWS Config integration, Organizations enumeration, core services (EC2, S3, RDS, IAM)
-- [x] **Azure & GCP Basics**: Resource Graph queries, Cloud Asset Inventory integration, basic resource types
-- [x] **Project Structure**: Complete directory structure with all modules
-- [x] **Go Module**: Dependencies for AWS, Azure, GCP SDKs and SQLite (pure Go driver)
-- [x] **Core Interfaces**: CloudProvider, NativeToolProvider, Storage, Cache interfaces
-- [x] **Resource Models**: Resource, Account, and data models with proper tags
-- [x] **SQLite Storage**: Complete storage layer with schema and CRUD operations
-- [x] **Discovery Orchestrator**: Main orchestrator with parallel processing
-- [x] **CLI Interface**: Complete CLI with discover, query, export, ask commands
-- [x] **Error Handling**: Custom error types and retry logic
-- [x] **Configuration**: YAML config management system
-- [x] **Documentation**: README, installation scripts, usage docs
-- [x] **Build Scripts**: Cross-platform build and installation scripts
+After comprehensive analysis, the following critical issues have been identified that prevent cloudrecon from functioning properly:
 
-#### **Phase 2: Intelligence Layer (Weeks 7-12)** COMPLETED **COMPLETED**
-- [x] **Smart Discovery**: Native tool detection and selection, fallback strategies, parallel processing optimization
-- [x] **Query Engine**: SQL query optimization, query templates library, export formats
-- [x] **Polish**: Terminal UI with progress bars, error handling and retry logic, comprehensive documentation
-- [x] **Query Engine**: SQL support, templates, and caching
-- [x] **Export System**: JSON, CSV, YAML, Terraform state formats
-- [x] **Rate Limiting**: Parallel execution controls and API throttling prevention
-- [x] **Caching Layer**: Query results and API response caching
-- [x] **Progress UI**: Terminal UI and progress bars
-- [x] **Multi-Cloud Support**: Unified interface across all three providers
-- [x] **Service Discovery**: Comprehensive resource discovery for all major cloud services
-
-#### **Phase 3: Advanced Features (Weeks 13-16)** COMPLETED **COMPLETED**
-- [x] **Continuous Monitoring**: Daemon mode for real-time updates, change detection and alerts, Slack/Teams notifications
-- [x] **Compliance & Security**: CIS benchmark checks, custom policy engine, remediation scripts
-- [x] **Native Tool Integration**: AWS Config, Azure Resource Graph, GCP Asset Inventory
-- [x] **Advanced Analysis**: Dependency mapping, security analysis, cost estimation
-- [x] **Analysis Orchestrator**: Unified analysis coordination across all dimensions
-- [x] **CLI Analysis Commands**: New CLI commands for analyze, security, cost, and dependencies
-- [x] **Cross-Cloud Analysis**: Analysis capabilities across AWS, Azure, and GCP
-
-#### **Testing & Quality** COMPLETED **COMPLETED**
-- [x] **Unit Test Coverage**: Comprehensive unit tests for all analysis modules
-- [x] **Test Infrastructure**: Centralized mock storage and test helpers
-- [x] **Test Fixes**: Resolved all test failures and compilation issues
-- [x] **SQLite CGO Fix**: Switched to pure Go SQLite driver (modernc.org/sqlite)
-- [x] **Build Verification**: Application builds and runs correctly on Windows
-- [x] **Test Coverage**: 100% test coverage for analysis modules with 50+ test cases
-- [x] **CI/CD Pipeline**: Complete CI/CD pipeline with linting, testing, security scanning
-- [x] **Multi-Platform Builds**: Windows, Linux, macOS support
-- [x] **Docker Containerization**: Multi-stage Docker builds
-- [x] **Code Quality**: Linting, formatting, and error handling
-- [x] **GitHub Repository**: Successfully deployed to production repository
+1. **Configuration System Broken** - Hardcoded config, no YAML loading
+2. **Storage Initialization Issues** - Viper not configured, empty database paths
+3. **Context Management Problems** - No cancellation, resource leaks
+4. **Incomplete GCP Implementation** - Missing resource discovery methods
+5. **Placeholder Cost Analysis** - All cost functions return 0.0
+6. **Missing Security Analysis** - Azure/GCP security analysis not implemented
+7. **Broken Provider Filtering** - Fixed in recent update
+8. **Incomplete Features** - Dependency mapping, resource enrichment not implemented
 
 ---
 
-## **PHASE 4: ENTERPRISE FEATURES (Current Phase)**
+## **🚀 COMPREHENSIVE FIX PLAN - 5 PHASE IMPLEMENTATION**
 
-### **Priority 1: Performance Optimization** 🔄 **IN PROGRESS**
-- [ ] **Analysis Performance**
-  - Optimize dependency analysis algorithms
-  - Improve security analysis speed
-  - Enhance cost calculation efficiency
-  - Add parallel processing for large datasets
-  - Implement caching for analysis results
+### **📋 Executive Summary**
 
-- [ ] **Memory & Resource Usage**
-  - Optimize memory usage for large resource sets
-  - Implement efficient data structures
-  - Add resource cleanup and garbage collection
-  - Monitor and profile performance
-  - Add memory usage monitoring
-
-### **Priority 2: Enhanced CLI & UX** 🔄 **IN PROGRESS**
-- [ ] **Interactive Analysis**
-  - Add interactive analysis mode
-  - Implement progress bars for long operations
-  - Add real-time analysis updates
-  - Create analysis dashboards
-  - Add colored output and formatting
-
-- [ ] **Export & Reporting**
-  - Enhanced export formats (PDF, HTML)
-  - Custom report templates
-  - Scheduled analysis reports
-  - Email/Slack notifications
-  - Interactive report generation
-
-### **Priority 3: Service-Specific Discovery** 🔄 **PENDING**
-- [ ] **Detailed Service Discovery**
-  - Add detailed resource discovery for each cloud service
-  - Implement Lambda function analysis
-  - Add CloudFormation stack analysis
-  - Complete ECS service discovery
-  - Add detailed Azure service discovery
-  - Complete GCP service-specific discovery
-
-### **Priority 4: Enterprise Features** 🔄 **PENDING**
-- [ ] **Multi-Tenant Support**
-  - Tenant isolation
-  - Resource quotas
-  - Access control
-  - Tenant-specific configurations
-
-- [ ] **API Server Mode**
-  - REST API implementation
-  - GraphQL support
-  - WebSocket real-time updates
-  - API authentication and authorization
-
-- [ ] **Plugin System**
-  - Custom provider plugins
-  - Custom export formats
-  - Custom analysis modules
-  - Plugin management and loading
-
-### **Priority 5: Advanced Analytics** 🔄 **PENDING**
-- [ ] **Machine Learning Integration**
-  - Anomaly detection
-  - Resource optimization recommendations
-  - Cost prediction models
-  - Usage pattern analysis
-
-- [ ] **Compliance & Governance**
-  - Policy enforcement
-  - Compliance reporting
-  - Audit trails
-  - Regulatory compliance checks
+This comprehensive plan addresses all identified issues in cloudrecon, transforming it from a partially functional prototype into a production-ready multi-cloud discovery and analysis platform. The plan is structured in 5 phases over 12-16 weeks, with each phase building upon the previous one.
 
 ---
 
-## **PHASE 4: ADVANCED FEATURES (3-4 days)**
+## **🎯 Phase 1: Critical Infrastructure Fixes (Weeks 1-3)**
+*Priority: CRITICAL - Must be completed first*
 
-### **Intelligence & Analysis**
-- [ ] **Dependency Mapping**
-  - Resource relationship analysis
-  - Dependency graph generation
-  - Impact analysis for changes
+### **1.1 Configuration System Overhaul**
+**Issues**: Broken config loading, hardcoded values, no viper integration
+**Timeline**: Week 1
 
-- [ ] **Security Analysis**
-  - Public access detection
-  - Encryption status analysis
-  - Security group analysis
-  - IAM permission analysis
+#### **Tasks**:
+- [ ] **Implement Proper YAML Configuration Loading**
+  - Replace hardcoded `loadConfig()` with viper-based configuration
+  - Add configuration validation and default values
+  - Support environment variable overrides
+  - Add configuration file watching for hot reloads
 
-- [ ] **Cost Estimation**
-  - AWS Pricing API integration
-  - Azure Cost Management integration
-  - GCP Billing API integration
-  - Cost optimization recommendations
+- [ ] **Fix Storage Initialization**
+  - Implement proper database path resolution
+  - Add database connection pooling
+  - Add migration system for schema updates
+  - Implement proper connection lifecycle management
 
-### **Performance & Optimization**
-- [ ] **Caching Strategy**
-  - Redis integration for distributed caching
-  - Cache invalidation strategies
-  - Performance monitoring
+- [ ] **Add Configuration Validation**
+  - Validate all configuration parameters
+  - Provide clear error messages for invalid configs
+  - Add configuration schema documentation
 
-- [ ] **Parallel Processing**
-  - Optimize concurrent API calls
-  - Implement proper rate limiting
-  - Add progress tracking
+#### **Deliverables**:
+```go
+// New configuration structure
+type Config struct {
+    Storage    StorageConfig    `yaml:"storage" validate:"required"`
+    AWS        AWSConfig        `yaml:"aws" validate:"required"`
+    Azure      AzureConfig      `yaml:"azure" validate:"required"`
+    GCP        GCPConfig        `yaml:"gcp" validate:"required"`
+    Discovery  DiscoveryConfig  `yaml:"discovery" validate:"required"`
+    Analysis   AnalysisConfig   `yaml:"analysis" validate:"required"`
+    Logging    LoggingConfig    `yaml:"logging" validate:"required"`
+}
+```
 
----
+### **1.2 Context Management Implementation**
+**Issues**: No cancellation, resource leaks, hanging operations
+**Timeline**: Week 1-2
 
-## **PHASE 5: TESTING & QUALITY (2-3 days)**
+#### **Tasks**:
+- [ ] **Implement Proper Context Propagation**
+  - Replace all `context.TODO()` with proper context handling
+  - Add timeout configurations for all operations
+  - Implement graceful shutdown with context cancellation
+  - Add operation-level timeouts
 
-### **Test Suite Development**
-- [ ] **Unit Tests**
-  - Provider-specific tests
-  - Storage layer tests
-  - Query engine tests
-  - Export functionality tests
+- [ ] **Add Resource Cleanup**
+  - Implement proper defer patterns for all resources
+  - Add connection pooling with proper cleanup
+  - Implement graceful shutdown handlers
+  - Add resource leak detection
 
-- [ ] **Integration Tests**
-  - End-to-end discovery tests
-  - Multi-cloud integration tests
-  - Performance benchmarks
+#### **Deliverables**:
+```go
+// Context management wrapper
+type OperationContext struct {
+    ctx    context.Context
+    cancel context.CancelFunc
+    timeout time.Duration
+}
 
-- [ ] **E2E Tests**
-  - Complete workflow testing
-  - Error scenario testing
-  - User acceptance testing
+func NewOperationContext(parent context.Context, timeout time.Duration) *OperationContext {
+    ctx, cancel := context.WithTimeout(parent, timeout)
+    return &OperationContext{ctx: ctx, cancel: cancel, timeout: timeout}
+}
+```
 
----
+### **1.3 Error Handling Standardization**
+**Issues**: Inconsistent error handling, poor error messages
+**Timeline**: Week 2
 
-## **PHASE 6: PRODUCTION READINESS (2-3 days)**
+#### **Tasks**:
+- [ ] **Implement Standardized Error Types**
+  - Create custom error types for different failure modes
+  - Add error wrapping with context
+  - Implement error recovery strategies
+  - Add structured error logging
 
-### **Monitoring & Observability**
-- [ ] **Logging Enhancement**
-  - Structured logging with correlation IDs
-  - Log aggregation and analysis
-  - Performance metrics collection
+- [ ] **Add Retry Logic**
+  - Implement exponential backoff with jitter
+  - Add circuit breaker pattern for external APIs
+  - Implement retry policies per operation type
+  - Add retry metrics and monitoring
 
-- [ ] **Monitoring Integration**
-  - Grafana dashboard creation
-  - Datadog integration
-  - Splunk integration
-  - Alerting rules
+#### **Deliverables**:
+```go
+// Standardized error types
+type CloudReconError struct {
+    Type    ErrorType `json:"type"`
+    Message string    `json:"message"`
+    Cause   error     `json:"cause,omitempty"`
+    Context map[string]interface{} `json:"context,omitempty"`
+}
 
-### **CI/CD & Deployment**
-- [ ] **GitHub Actions Pipeline**
-  - Automated testing
-  - Security scanning
-  - Multi-platform builds
-  - Release automation
-
-- [ ] **Docker & Containerization**
-  - Multi-stage Docker builds
-  - Container optimization
-  - Kubernetes manifests
-  - Helm charts
-
-### **Documentation & Support**
-- [ ] **User Documentation**
-  - Complete user guide
-  - API documentation
-  - Troubleshooting guide
-  - Video tutorials
-
-- [ ] **Developer Documentation**
-  - Architecture documentation
-  - Contributing guidelines
-  - Code style guide
-  - Release notes
-
----
-
-## **PHASE 7: ADVANCED FEATURES (1-2 weeks)**
-
-### **Enterprise Features**
-- [ ] **Multi-Tenant Support**
-  - Tenant isolation
-  - Resource quotas
-  - Access control
-
-- [ ] **API Server Mode**
-  - REST API implementation
-  - GraphQL support
-  - WebSocket real-time updates
-
-- [ ] **Plugin System**
-  - Custom provider plugins
-  - Custom export formats
-  - Custom analysis modules
-
-### **Advanced Analytics**
-- [ ] **Machine Learning Integration**
-  - Anomaly detection
-  - Resource optimization recommendations
-  - Cost prediction models
-
-- [ ] **Compliance & Governance**
-  - Policy enforcement
-  - Compliance reporting
-  - Audit trails
+type ErrorType string
+const (
+    ErrorTypeConfig     ErrorType = "config"
+    ErrorTypeAuth       ErrorType = "auth"
+    ErrorTypeNetwork    ErrorType = "network"
+    ErrorTypeRateLimit  ErrorType = "rate_limit"
+    ErrorTypeNotFound   ErrorType = "not_found"
+    ErrorTypeInternal   ErrorType = "internal"
+)
+```
 
 ---
 
-## **ESTIMATED TIMELINE**
+## **🔧 Phase 2: Core Functionality Implementation (Weeks 4-7)**
+*Priority: HIGH - Core features must work*
 
-| Phase | Duration | Priority | Status |
-|-------|----------|----------|---------|
-| Phase 2: Immediate Fixes | 1 day | Critical | In Progress |
-| Phase 3: Cloud Providers | 2-3 days | High | Pending |
-| Phase 4: Advanced Features | 3-4 days | Medium | Pending |
-| Phase 5: Testing | 2-3 days | High | Pending |
-| Phase 6: Production Ready | 2-3 days | High | Pending |
-| Phase 7: Enterprise Features | 1-2 weeks | Low | Future |
+### **2.1 Complete GCP Provider Implementation**
+**Issues**: Missing GCP resource discovery, placeholder implementations
+**Timeline**: Week 4-5
 
-**Total Estimated Time: 2-3 weeks for MVP, 4-6 weeks for full enterprise features**
+#### **Tasks**:
+- [ ] **Implement Cloud Storage Discovery**
+  - List all storage buckets
+  - Get bucket metadata and permissions
+  - Check for public access
+  - Analyze encryption settings
+
+- [ ] **Implement Cloud SQL Discovery**
+  - List all SQL instances
+  - Get instance configurations
+  - Check backup settings
+  - Analyze security configurations
+
+- [ ] **Implement Cloud Functions Discovery**
+  - List all Cloud Functions
+  - Get function configurations
+  - Analyze IAM permissions
+  - Check environment variables
+
+- [ ] **Complete Asset Inventory Integration**
+  - Implement proper asset parsing
+  - Add resource type mapping
+  - Implement region extraction
+  - Add metadata enrichment
+
+#### **Deliverables**:
+```go
+// Complete GCP resource discovery
+func (p *GCPProvider) DiscoverResources(ctx context.Context, account Account, opts DiscoveryOptions) ([]Resource, error) {
+    // Implement all resource types
+    resources := []Resource{}
+    
+    // Storage buckets
+    buckets, err := p.discoverStorageBuckets(ctx, account.ID)
+    if err != nil {
+        return nil, fmt.Errorf("failed to discover storage buckets: %w", err)
+    }
+    resources = append(resources, buckets...)
+    
+    // SQL instances
+    sqlInstances, err := p.discoverSQLInstances(ctx, account.ID)
+    if err != nil {
+        return nil, fmt.Errorf("failed to discover SQL instances: %w", err)
+    }
+    resources = append(resources, sqlInstances...)
+    
+    // Cloud Functions
+    functions, err := p.discoverCloudFunctions(ctx, account.ID)
+    if err != nil {
+        return nil, fmt.Errorf("failed to discover Cloud Functions: %w", err)
+    }
+    resources = append(resources, functions...)
+    
+    return resources, nil
+}
+```
+
+### **2.2 Cost Analysis Implementation**
+**Issues**: All cost functions return 0.0, no real cost data
+**Timeline**: Week 5-6
+
+#### **Tasks**:
+- [ ] **Implement AWS Cost Analysis**
+  - Integrate with AWS Cost Explorer API
+  - Implement EC2 cost calculation
+  - Add RDS cost estimation
+  - Implement S3 cost analysis
+  - Add Lambda cost calculation
+
+- [ ] **Implement GCP Cost Analysis**
+  - Integrate with GCP Billing API
+  - Implement Compute Engine cost calculation
+  - Add Cloud SQL cost estimation
+  - Implement Storage cost analysis
+  - Add Cloud Functions cost calculation
+
+- [ ] **Implement Azure Cost Analysis**
+  - Integrate with Azure Cost Management API
+  - Implement VM cost calculation
+  - Add SQL Database cost estimation
+  - Implement Storage cost analysis
+
+- [ ] **Add Cost Optimization Recommendations**
+  - Identify unused resources
+  - Suggest right-sizing opportunities
+  - Recommend reserved instances
+  - Add cost trend analysis
+
+#### **Deliverables**:
+```go
+// Real cost analysis implementation
+type CostAnalyzer struct {
+    awsClient  *aws.CostExplorerClient
+    gcpClient  *gcp.BillingClient
+    azureClient *azure.CostManagementClient
+}
+
+func (ca *CostAnalyzer) AnalyzeResourceCost(ctx context.Context, resource Resource) (CostAnalysis, error) {
+    switch resource.Provider {
+    case "aws":
+        return ca.analyzeAWSCost(ctx, resource)
+    case "gcp":
+        return ca.analyzeGCPCost(ctx, resource)
+    case "azure":
+        return ca.analyzeAzureCost(ctx, resource)
+    default:
+        return CostAnalysis{}, fmt.Errorf("unsupported provider: %s", resource.Provider)
+    }
+}
+```
+
+### **2.3 Security Analysis Implementation**
+**Issues**: Only AWS security analysis works, Azure/GCP return empty results
+**Timeline**: Week 6-7
+
+#### **Tasks**:
+- [ ] **Complete Azure Security Analysis**
+  - Implement VM security checks
+  - Add storage security analysis
+  - Implement database security checks
+  - Add network security analysis
+
+- [ ] **Complete GCP Security Analysis**
+  - Implement Compute Engine security checks
+  - Add Cloud Storage security analysis
+  - Implement Cloud SQL security checks
+  - Add IAM security analysis
+
+- [ ] **Add Cross-Provider Security Analysis**
+  - Implement network flow analysis
+  - Add data flow tracking
+  - Implement compliance checking
+  - Add security posture scoring
+
+#### **Deliverables**:
+```go
+// Complete security analysis
+func (sa *SecurityAnalyzer) AnalyzeSecurity(ctx context.Context) (*SecurityReport, error) {
+    report := &SecurityReport{
+        Findings: []SecurityFinding{},
+        Summary:  SecuritySummary{},
+    }
+    
+    // Analyze all providers
+    for _, provider := range sa.providers {
+        findings, err := sa.analyzeProviderSecurity(ctx, provider)
+        if err != nil {
+            return nil, fmt.Errorf("failed to analyze %s security: %w", provider, err)
+        }
+        report.Findings = append(report.Findings, findings...)
+    }
+    
+    // Cross-provider analysis
+    crossFindings, err := sa.analyzeCrossProviderSecurity(ctx)
+    if err != nil {
+        return nil, fmt.Errorf("failed to analyze cross-provider security: %w", err)
+    }
+    report.Findings = append(report.Findings, crossFindings...)
+    
+    return report, nil
+}
+```
 
 ---
 
-## **SUCCESS CRITERIA**
+## **⚡ Phase 3: Advanced Features and Optimization (Weeks 8-10)**
+*Priority: MEDIUM - Enhanced functionality*
 
-### **MVP Success Criteria**
-- [ ] Application compiles and runs without errors
-- [ ] All three cloud providers (AWS, Azure, GCP) discover resources
-- [ ] Basic query and export functionality works
-- [ ] CLI is fully functional with all commands
-- [ ] Basic test suite passes
+### **3.1 Dependency Mapping Implementation**
+**Issues**: All dependency analysis returns empty results
+**Timeline**: Week 8
 
-### **Production Success Criteria**
-- [ ] 95%+ test coverage
-- [ ] Performance benchmarks met (10x faster than existing tools)
-- [ ] Security analysis features working
-- [ ] Cost estimation accurate within 10%
-- [ ] Documentation complete and user-friendly
-- [ ] CI/CD pipeline fully automated
+#### **Tasks**:
+- [ ] **Implement Resource Dependency Detection**
+  - Map VPC and subnet relationships
+  - Track load balancer to instance mappings
+  - Map database to application connections
+  - Track storage to compute dependencies
 
-### **Enterprise Success Criteria**
-- [ ] Multi-tenant support
-- [ ] API server mode
-- [ ] Plugin system
-- [ ] Advanced analytics
-- [ ] Compliance features
-- [ ] Scalability to 1000+ accounts
+- [ ] **Add Cross-Provider Dependencies**
+  - Map CDN to storage relationships
+  - Track DNS to service mappings
+  - Map monitoring to resource connections
+  - Track backup to source dependencies
+
+- [ ] **Implement Dependency Visualization**
+  - Generate dependency graphs
+  - Export to Graphviz format
+  - Add interactive web visualization
+  - Implement dependency impact analysis
+
+#### **Deliverables**:
+```go
+// Dependency mapping implementation
+type DependencyAnalyzer struct {
+    storage Storage
+    providers map[string]CloudProvider
+}
+
+func (da *DependencyAnalyzer) AnalyzeDependencies(ctx context.Context) (*DependencyGraph, error) {
+    graph := NewDependencyGraph()
+    
+    // Get all resources
+    resources, err := da.storage.GetAllResources(ctx)
+    if err != nil {
+        return nil, fmt.Errorf("failed to get resources: %w", err)
+    }
+    
+    // Analyze dependencies
+    for _, resource := range resources {
+        dependencies, err := da.findResourceDependencies(ctx, resource)
+        if err != nil {
+            continue // Log error but continue
+        }
+        
+        for _, dep := range dependencies {
+            graph.AddDependency(resource.ID, dep.ID, dep.Type)
+        }
+    }
+    
+    return graph, nil
+}
+```
+
+### **3.2 Resource Enrichment System**
+**Issues**: No actual enrichment logic implemented
+**Timeline**: Week 9
+
+#### **Tasks**:
+- [ ] **Implement Metadata Enrichment**
+  - Add resource tagging analysis
+  - Implement compliance status checking
+  - Add performance metrics collection
+  - Implement usage pattern analysis
+
+- [ ] **Add External Data Integration**
+  - Integrate with monitoring systems
+  - Add vulnerability scanning results
+  - Implement compliance framework checking
+  - Add cost optimization recommendations
+
+- [ ] **Implement Real-time Updates**
+  - Add change detection
+  - Implement incremental updates
+  - Add real-time notifications
+  - Implement webhook support
+
+#### **Deliverables**:
+```go
+// Resource enrichment system
+type ResourceEnricher struct {
+    storage Storage
+    externalAPIs map[string]ExternalAPI
+}
+
+func (re *ResourceEnricher) EnrichResource(ctx context.Context, resource *Resource) error {
+    // Add metadata
+    if err := re.addMetadata(ctx, resource); err != nil {
+        return fmt.Errorf("failed to add metadata: %w", err)
+    }
+    
+    // Add compliance status
+    if err := re.addComplianceStatus(ctx, resource); err != nil {
+        return fmt.Errorf("failed to add compliance status: %w", err)
+    }
+    
+    // Add performance metrics
+    if err := re.addPerformanceMetrics(ctx, resource); err != nil {
+        return fmt.Errorf("failed to add performance metrics: %w", err)
+    }
+    
+    return nil
+}
+```
+
+### **3.3 Performance Optimization**
+**Issues**: No performance optimization, potential bottlenecks
+**Timeline**: Week 10
+
+#### **Tasks**:
+- [ ] **Implement Parallel Processing**
+  - Add concurrent resource discovery
+  - Implement parallel analysis
+  - Add batch processing
+  - Implement worker pools
+
+- [ ] **Add Caching Layer**
+  - Implement Redis caching
+  - Add in-memory caching
+  - Implement cache invalidation
+  - Add cache warming
+
+- [ ] **Optimize Database Operations**
+  - Add database indexing
+  - Implement query optimization
+  - Add connection pooling
+  - Implement batch operations
+
+#### **Deliverables**:
+```go
+// Performance optimized discovery
+type OptimizedDiscoveryOrchestrator struct {
+    providers map[string]CloudProvider
+    storage   Storage
+    cache     Cache
+    workers   *WorkerPool
+}
+
+func (odo *OptimizedDiscoveryOrchestrator) Discover(ctx context.Context) (*DiscoveryResult, error) {
+    // Use worker pool for parallel discovery
+    results := make(chan DiscoveryResult, len(odo.providers))
+    errors := make(chan error, len(odo.providers))
+    
+    for providerName, provider := range odo.providers {
+        go func(name string, p CloudProvider) {
+            result, err := odo.discoverProvider(ctx, p)
+            if err != nil {
+                errors <- err
+                return
+            }
+            results <- result
+        }(providerName, provider)
+    }
+    
+    // Collect results
+    var allResults []DiscoveryResult
+    for i := 0; i < len(odo.providers); i++ {
+        select {
+        case result := <-results:
+            allResults = append(allResults, result)
+        case err := <-errors:
+            return nil, err
+        }
+    }
+    
+    return odo.mergeResults(allResults), nil
+}
+```
 
 ---
 
-## **NEXT IMMEDIATE STEPS**
+## **🧪 Phase 4: Testing and Quality Assurance (Weeks 11-12)**
+*Priority: HIGH - Must be reliable*
 
-1. **Fix Compilation Errors** (Today)
-   - Resolve GCP ProjectNumber field issue
-   - Fix AWS provider tag parsing
-   - Ensure clean build
+### **4.1 Comprehensive Test Suite**
+**Issues**: Mock tests don't reflect real behavior, poor coverage
+**Timeline**: Week 11
 
-2. **Complete AWS Provider** (Tomorrow)
-   - Add missing service integrations
-   - Implement native tool support
-   - Add comprehensive resource discovery
+#### **Tasks**:
+- [ ] **Implement Integration Tests**
+  - Add real cloud provider integration tests
+  - Implement end-to-end discovery tests
+  - Add analysis pipeline tests
+  - Implement error scenario tests
 
-3. **Complete Azure Provider** (Day 3)
-   - Implement Resource Graph integration
-   - Add subscription enumeration
-   - Complete service discovery
+- [ ] **Add Unit Test Coverage**
+  - Achieve 90%+ code coverage
+  - Add edge case testing
+  - Implement property-based testing
+  - Add performance benchmarks
 
-4. **Complete GCP Provider** (Day 4)
-   - Fix Asset Inventory integration
-   - Add Resource Manager support
-   - Complete service discovery
+- [ ] **Implement Test Infrastructure**
+  - Add test data fixtures
+  - Implement test environment setup
+  - Add test cleanup automation
+  - Implement test reporting
 
-5. **Testing & Validation** (Day 5)
-   - Build comprehensive test suite
-   - Validate all providers work correctly
-   - Performance testing
+#### **Deliverables**:
+```go
+// Comprehensive test suite
+func TestDiscoveryIntegration(t *testing.T) {
+    // Setup test environment
+    testEnv := setupTestEnvironment(t)
+    defer testEnv.Cleanup()
+    
+    // Test discovery
+    orchestrator := NewDiscoveryOrchestrator(testEnv.Providers, testEnv.Storage, testEnv.Options)
+    result, err := orchestrator.Discover(context.Background())
+    
+    assert.NoError(t, err)
+    assert.NotEmpty(t, result.Resources)
+    assert.Greater(t, len(result.Accounts), 0)
+    
+    // Verify resource data
+    for _, resource := range result.Resources {
+        assert.NotEmpty(t, resource.ID)
+        assert.NotEmpty(t, resource.Provider)
+        assert.NotEmpty(t, resource.Type)
+    }
+}
+```
 
-This implementation plan follows the detailed specifications in CLAUDE.md and ensures CloudRecon becomes a production-ready, enterprise-grade cloud resource discovery tool that delivers on its promise of 10x better performance than existing solutions.
+### **4.2 Quality Assurance**
+**Issues**: No quality gates, potential reliability issues
+**Timeline**: Week 12
+
+#### **Tasks**:
+- [ ] **Implement Code Quality Gates**
+  - Add linting rules
+  - Implement code review requirements
+  - Add security scanning
+  - Implement dependency scanning
+
+- [ ] **Add Performance Testing**
+  - Implement load testing
+  - Add stress testing
+  - Implement memory profiling
+  - Add performance regression testing
+
+- [ ] **Implement Monitoring**
+  - Add application metrics
+  - Implement health checks
+  - Add error tracking
+  - Implement performance monitoring
+
+#### **Deliverables**:
+```go
+// Quality assurance framework
+type QualityGate struct {
+    linter    Linter
+    scanner   SecurityScanner
+    profiler  Profiler
+    monitor   Monitor
+}
+
+func (qg *QualityGate) RunQualityChecks(ctx context.Context) (*QualityReport, error) {
+    report := &QualityReport{}
+    
+    // Run linting
+    lintResults, err := qg.linter.Run(ctx)
+    if err != nil {
+        return nil, fmt.Errorf("linting failed: %w", err)
+    }
+    report.LintResults = lintResults
+    
+    // Run security scan
+    securityResults, err := qg.scanner.Scan(ctx)
+    if err != nil {
+        return nil, fmt.Errorf("security scan failed: %w", err)
+    }
+    report.SecurityResults = securityResults
+    
+    // Run performance profiling
+    perfResults, err := qg.profiler.Profile(ctx)
+    if err != nil {
+        return nil, fmt.Errorf("profiling failed: %w", err)
+    }
+    report.PerformanceResults = perfResults
+    
+    return report, nil
+}
+```
+
+---
+
+## **📚 Phase 5: Documentation and Deployment (Weeks 13-16)**
+*Priority: MEDIUM - Production readiness*
+
+### **5.1 API Implementation**
+**Issues**: No REST API, limited programmatic access
+**Timeline**: Week 13-14
+
+#### **Tasks**:
+- [ ] **Implement REST API**
+  - Add HTTP server with Gin/Echo
+  - Implement resource endpoints
+  - Add analysis endpoints
+  - Implement authentication/authorization
+
+- [ ] **Add API Documentation**
+  - Generate OpenAPI/Swagger specs
+  - Add interactive API docs
+  - Implement API versioning
+  - Add rate limiting
+
+- [ ] **Implement WebSocket Support**
+  - Add real-time updates
+  - Implement progress tracking
+  - Add live monitoring
+  - Implement event streaming
+
+#### **Deliverables**:
+```go
+// REST API implementation
+type APIServer struct {
+    router   *gin.Engine
+    storage  Storage
+    analyzer *AnalysisOrchestrator
+}
+
+func (api *APIServer) SetupRoutes() {
+    v1 := api.router.Group("/api/v1")
+    {
+        // Resource endpoints
+        v1.GET("/resources", api.getResources)
+        v1.GET("/resources/:id", api.getResource)
+        v1.POST("/resources/search", api.searchResources)
+        
+        // Analysis endpoints
+        v1.POST("/analyze/security", api.analyzeSecurity)
+        v1.POST("/analyze/cost", api.analyzeCost)
+        v1.POST("/analyze/dependencies", api.analyzeDependencies)
+        
+        // Discovery endpoints
+        v1.POST("/discover", api.startDiscovery)
+        v1.GET("/discover/status/:id", api.getDiscoveryStatus)
+    }
+}
+```
+
+### **5.2 Documentation and Deployment**
+**Issues**: Limited documentation, no deployment strategy
+**Timeline**: Week 15-16
+
+#### **Tasks**:
+- [ ] **Create Comprehensive Documentation**
+  - Add user guides
+  - Implement API documentation
+  - Add deployment guides
+  - Create troubleshooting guides
+
+- [ ] **Implement Deployment Options**
+  - Add Docker containerization
+  - Implement Kubernetes manifests
+  - Add Helm charts
+  - Implement CI/CD pipelines
+
+- [ ] **Add Monitoring and Observability**
+  - Implement Prometheus metrics
+  - Add Grafana dashboards
+  - Implement distributed tracing
+  - Add log aggregation
+
+#### **Deliverables**:
+```yaml
+# Docker Compose for development
+version: '3.8'
+services:
+  cloudrecon:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - CONFIG_PATH=/app/config/cloudrecon.yaml
+    volumes:
+      - ./config:/app/config
+      - ./data:/app/data
+    depends_on:
+      - redis
+      - postgres
+  
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+  
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=cloudrecon
+      - POSTGRES_USER=cloudrecon
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+```
+
+---
+
+## **📊 Success Metrics and Validation**
+
+### **Phase 1 Success Criteria**:
+- [ ] Configuration loads from YAML file
+- [ ] All operations can be cancelled
+- [ ] No resource leaks detected
+- [ ] Standardized error handling works
+
+### **Phase 2 Success Criteria**:
+- [ ] GCP discovers all resource types
+- [ ] Cost analysis returns real values
+- [ ] Security analysis works for all providers
+- [ ] 90%+ resource discovery success rate
+
+### **Phase 3 Success Criteria**:
+- [ ] Dependency mapping works
+- [ ] Resource enrichment functional
+- [ ] 50% performance improvement
+- [ ] Parallel processing implemented
+
+### **Phase 4 Success Criteria**:
+- [ ] 90%+ test coverage
+- [ ] All integration tests pass
+- [ ] Performance benchmarks met
+- [ ] Quality gates pass
+
+### **Phase 5 Success Criteria**:
+- [ ] REST API functional
+- [ ] Documentation complete
+- [ ] Deployment successful
+- [ ] Monitoring operational
+
+---
+
+## **🎯 Final Deliverables**
+
+By the end of Phase 5, cloudrecon will be a **production-ready, enterprise-grade multi-cloud discovery and analysis platform** with:
+
+✅ **Complete Multi-Cloud Support** (AWS, Azure, GCP)  
+✅ **Real Cost Analysis** with optimization recommendations  
+✅ **Comprehensive Security Analysis** across all providers  
+✅ **Dependency Mapping** with visualization  
+✅ **REST API** with full documentation  
+✅ **High Performance** with parallel processing  
+✅ **Production Deployment** with monitoring  
+✅ **Comprehensive Testing** with 90%+ coverage  
+✅ **Complete Documentation** for users and developers  
+
+---
+
+## **📅 IMPLEMENTATION TIMELINE**
+
+| Phase | Duration | Priority | Status | GitHub Actions Testing |
+|-------|----------|----------|---------|----------------------|
+| Phase 1: Critical Infrastructure | 3 weeks | CRITICAL | 🔄 Starting | After each task |
+| Phase 2: Core Functionality | 4 weeks | HIGH | ⏳ Pending | After each task |
+| Phase 3: Advanced Features | 3 weeks | MEDIUM | ⏳ Pending | After each task |
+| Phase 4: Testing & QA | 2 weeks | HIGH | ⏳ Pending | After each task |
+| Phase 5: Documentation & Deployment | 4 weeks | MEDIUM | ⏳ Pending | After each task |
+
+**Total Estimated Time: 16 weeks for complete production-ready platform**
+
+---
+
+## **🚀 IMMEDIATE NEXT STEPS**
+
+1. **Start Phase 1.1: Configuration System Overhaul** (Today)
+   - Implement proper YAML configuration loading
+   - Fix storage initialization
+   - Test with GitHub Actions
+
+2. **Continue Phase 1.2: Context Management** (Week 1)
+   - Implement proper context propagation
+   - Add resource cleanup
+   - Test with GitHub Actions
+
+3. **Complete Phase 1.3: Error Handling** (Week 2)
+   - Implement standardized error types
+   - Add retry logic
+   - Test with GitHub Actions
+
+This implementation plan transforms cloudrecon from a prototype into a professional-grade tool that can compete with commercial solutions while remaining open-source and extensible.

@@ -117,37 +117,42 @@ using the most efficient method available (cloud-native tools when possible).`,
 			}
 			defer storage.Close()
 
-			// Initialize providers
-			providers := make(map[string]core.CloudProvider)
+			// Initialize providers based on command line flags
+			providerMap := make(map[string]core.CloudProvider)
 
-			if contains([]string{"aws"}, "aws") || len(providers) == 0 {
+			// If no providers specified, initialize all
+			if len(providers) == 0 {
+				providers = []string{"aws", "azure", "gcp"}
+			}
+
+			if contains(providers, "aws") {
 				awsProvider, err := aws.NewProvider(config.AWS)
 				if err != nil {
 					logrus.Warnf("Failed to initialize AWS provider: %v", err)
 				} else {
-					providers["aws"] = awsProvider
+					providerMap["aws"] = awsProvider
 				}
 			}
 
-			if contains([]string{"azure"}, "azure") || len(providers) == 0 {
+			if contains(providers, "azure") {
 				azureProvider, err := azure.NewProvider(config.Azure)
 				if err != nil {
 					logrus.Warnf("Failed to initialize Azure provider: %v", err)
 				} else {
-					providers["azure"] = azureProvider
+					providerMap["azure"] = azureProvider
 				}
 			}
 
-			if contains([]string{"gcp"}, "gcp") || len(providers) == 0 {
+			if contains(providers, "gcp") {
 				gcpProvider, err := gcp.NewProvider(config.GCP)
 				if err != nil {
 					logrus.Warnf("Failed to initialize GCP provider: %v", err)
 				} else {
-					providers["gcp"] = gcpProvider
+					providerMap["gcp"] = gcpProvider
 				}
 			}
 
-			if len(providers) == 0 {
+			if len(providerMap) == 0 {
 				return fmt.Errorf("no cloud providers could be initialized")
 			}
 
@@ -165,7 +170,7 @@ using the most efficient method available (cloud-native tools when possible).`,
 			// Create discovery options
 			options := core.DiscoveryOptions{
 				Mode:           discoveryMode,
-				Providers:      []string{"aws", "azure", "gcp"}, // TODO: Get from providers map
+				Providers:      providers, // Use the actual providers from command line
 				Accounts:       accounts,
 				Regions:        regions,
 				ResourceTypes:  resourceTypes,
@@ -179,7 +184,7 @@ using the most efficient method available (cloud-native tools when possible).`,
 			}
 
 			// Create orchestrator
-			orchestrator := core.NewDiscoveryOrchestrator(providers, storage, options)
+			orchestrator := core.NewDiscoveryOrchestrator(providerMap, storage, options)
 
 			// Start discovery
 			logrus.Info("Starting cloud resource discovery...")
@@ -542,22 +547,119 @@ func createInteractiveCmd() *cobra.Command {
 
 // Helper functions
 func loadConfig() (*core.Config, error) {
-	// For now, return a default config
-	// In a real implementation, this would load from YAML file
-	return &core.Config{
-		Storage: core.StorageConfig{
-			DatabasePath: "cloudrecon.db",
-		},
-		AWS: core.AWSConfig{
-			Regions: []string{"us-east-1", "us-west-2"},
-		},
-		Azure: core.AzureConfig{
-			// Azure config fields will be added when needed
-		},
-		GCP: core.GCPConfig{
-			// GCP config fields will be added when needed
-		},
-	}, nil
+	// Initialize viper
+	viper.SetConfigName("cloudrecon")
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath(".")
+	viper.AddConfigPath("./config")
+	viper.AddConfigPath("$HOME/.cloudrecon")
+	viper.AddConfigPath("/etc/cloudrecon")
+
+	// Set default values
+	setDefaultConfig()
+
+	// Enable environment variable overrides
+	viper.AutomaticEnv()
+	viper.SetEnvPrefix("CLOUDRECON")
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+
+	// Read config file
+	if err := viper.ReadInConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			logrus.Warn("Config file not found, using defaults")
+		} else {
+			return nil, fmt.Errorf("failed to read config file: %w", err)
+		}
+	} else {
+		logrus.Infof("Using config file: %s", viper.ConfigFileUsed())
+	}
+
+	// Unmarshal config
+	var config core.Config
+	if err := viper.Unmarshal(&config); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal config: %w", err)
+	}
+
+	// Debug logging
+	logrus.Debugf("Loaded config successfully")
+
+	// Validate config
+	if err := validateConfig(&config); err != nil {
+		return nil, fmt.Errorf("config validation failed: %w", err)
+	}
+
+	return &config, nil
+}
+
+func setDefaultConfig() {
+	// Storage defaults
+	viper.SetDefault("storage.database_path", "cloudrecon.db")
+	viper.SetDefault("storage.max_connections", 10)
+	viper.SetDefault("storage.connection_timeout", "30s")
+
+	// AWS defaults
+	viper.SetDefault("aws.regions", []string{"us-east-1", "us-west-2"})
+	viper.SetDefault("aws.max_retries", 3)
+	viper.SetDefault("aws.timeout", "30s")
+
+	// Azure defaults
+	viper.SetDefault("azure.subscriptions", []string{})
+	viper.SetDefault("azure.max_retries", 3)
+	viper.SetDefault("azure.timeout", "30s")
+
+	// GCP defaults
+	viper.SetDefault("gcp.project_id", "")
+	viper.SetDefault("gcp.organization_id", "")
+	viper.SetDefault("gcp.credentials_path", "")
+	viper.SetDefault("gcp.projects", []string{})
+	viper.SetDefault("gcp.max_retries", 3)
+	viper.SetDefault("gcp.timeout", "30s")
+	viper.SetDefault("gcp.discovery_methods", []string{"config", "environment", "gcloud", "metadata", "resource_manager"})
+
+	// Discovery defaults
+	viper.SetDefault("discovery.max_parallel", 10)
+	viper.SetDefault("discovery.timeout", "300s")
+	viper.SetDefault("discovery.use_native_tools", true)
+
+	// Analysis defaults
+	viper.SetDefault("analysis.enable_cost_analysis", true)
+	viper.SetDefault("analysis.enable_security_analysis", true)
+	viper.SetDefault("analysis.enable_dependency_analysis", true)
+	viper.SetDefault("analysis.cache_results", true)
+
+	// Logging defaults
+	viper.SetDefault("logging.level", "info")
+	viper.SetDefault("logging.format", "json")
+	viper.SetDefault("logging.output", "stdout")
+}
+
+func validateConfig(config *core.Config) error {
+	// Validate storage config
+	if config.Storage.DatabasePath == "" {
+		return fmt.Errorf("storage.database_path is required")
+	}
+
+	// Validate AWS config
+	if len(config.AWS.Regions) == 0 {
+		return fmt.Errorf("aws.regions cannot be empty")
+	}
+
+	// Validate GCP config
+	if config.GCP.ProjectID != "" && len(config.GCP.Projects) > 0 {
+		return fmt.Errorf("cannot specify both gcp.project_id and gcp.projects")
+	}
+
+	// Validate discovery config
+	if config.Discovery.MaxParallel <= 0 {
+		return fmt.Errorf("discovery.max_parallel must be greater than 0")
+	}
+
+	// Validate analysis config
+	if !config.Analysis.EnableCostAnalysis && !config.Analysis.EnableSecurityAnalysis && !config.Analysis.EnableDependencyAnalysis {
+		return fmt.Errorf("at least one analysis type must be enabled")
+	}
+
+	return nil
 }
 
 func contains(slice []string, item string) bool {
