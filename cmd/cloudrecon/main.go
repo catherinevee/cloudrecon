@@ -112,7 +112,7 @@ using the most efficient method available (cloud-native tools when possible).`,
 			// Load configuration
 			config, err := loadConfig()
 			if err != nil {
-				return fmt.Errorf("failed to load config: %w", err)
+				return core.NewConfigError("failed to load config", err)
 			}
 
 			// Initialize storage with context
@@ -121,7 +121,7 @@ using the most efficient method available (cloud-native tools when possible).`,
 			
 			storage, err := storage.NewSQLiteStorage(config.Storage.DatabasePath)
 			if err != nil {
-				return fmt.Errorf("failed to initialize storage: %w", err)
+				return core.NewStorageError("failed to initialize storage", err)
 			}
 			defer storage.Close()
 
@@ -161,7 +161,7 @@ using the most efficient method available (cloud-native tools when possible).`,
 			}
 
 			if len(providerMap) == 0 {
-				return fmt.Errorf("no cloud providers could be initialized")
+				return core.NewProviderError("no cloud providers could be initialized", nil)
 			}
 
 			// Parse discovery mode
@@ -203,7 +203,7 @@ using the most efficient method available (cloud-native tools when possible).`,
 			
 			result, err := orchestrator.Discover(discoveryCtx.Context())
 			if err != nil {
-				return fmt.Errorf("discovery failed: %w", err)
+				return core.NewProviderError("discovery failed", err)
 			}
 
 			duration := time.Since(start)

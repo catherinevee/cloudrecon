@@ -135,12 +135,13 @@ func (p *GCPProvider) DiscoverWithNativeTool(ctx context.Context, account core.A
 // discoverFromConfig discovers project from configuration
 func (p *GCPProvider) discoverFromConfig(ctx context.Context) ([]core.Account, error) {
 	if p.config.ProjectID == "" {
-		return nil, fmt.Errorf("no project_id specified in configuration")
+		return nil, core.NewConfigError("no project_id specified in configuration", nil)
 	}
 
 	// Validate that we can access this project
 	if err := p.validateProjectAccess(ctx, p.config.ProjectID); err != nil {
-		return nil, fmt.Errorf("cannot access configured project %s: %w", p.config.ProjectID, err)
+		return nil, core.NewProviderError("cannot access configured project", err).
+			WithContext("project_id", p.config.ProjectID)
 	}
 
 	account := core.Account{
