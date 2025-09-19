@@ -23,7 +23,10 @@ type GCPProvider struct {
 
 // NewProvider creates a new GCP provider
 func NewProvider(cfg core.GCPConfig) (*GCPProvider, error) {
-	ctx := context.Background()
+	// Create context with timeout for client initialization
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	
 	assetInventoryClient, err := NewGCPAssetInventoryClient(ctx)
 	if err != nil {
 		logrus.Warnf("Failed to create Asset Inventory client: %v", err)

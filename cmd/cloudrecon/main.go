@@ -104,13 +104,21 @@ func createDiscoverCmd() *cobra.Command {
 This command will automatically detect available accounts and discover resources
 using the most efficient method available (cloud-native tools when possible).`,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			// Create context manager with proper timeouts
+			ctxManager := core.NewContextManager(cmd.Context())
+			ctxManager.SetTimeout(core.OperationDiscovery, timeout)
+			ctxManager.SetTimeout(core.OperationStorage, 10*time.Second)
+
 			// Load configuration
 			config, err := loadConfig()
 			if err != nil {
 				return fmt.Errorf("failed to load config: %w", err)
 			}
 
-			// Initialize storage
+			// Initialize storage with context
+			storageCtx := ctxManager.NewOperationContext(core.OperationStorage)
+			defer storageCtx.Cancel()
+			
 			storage, err := storage.NewSQLiteStorage(config.Storage.DatabasePath)
 			if err != nil {
 				return fmt.Errorf("failed to initialize storage: %w", err)
@@ -186,11 +194,14 @@ using the most efficient method available (cloud-native tools when possible).`,
 			// Create orchestrator
 			orchestrator := core.NewDiscoveryOrchestrator(providerMap, storage, options)
 
-			// Start discovery
+			// Start discovery with proper context
 			logrus.Info("Starting cloud resource discovery...")
 			start := time.Now()
 
-			result, err := orchestrator.Discover(cmd.Context())
+			discoveryCtx := ctxManager.NewOperationContext(core.OperationDiscovery)
+			defer discoveryCtx.Cancel()
+			
+			result, err := orchestrator.Discover(discoveryCtx.Context())
 			if err != nil {
 				return fmt.Errorf("discovery failed: %w", err)
 			}
