@@ -8,12 +8,12 @@ import (
 
 // OperationContext wraps context with additional metadata and timeout management
 type OperationContext struct {
-	ctx         context.Context
-	cancel      context.CancelFunc
-	timeout     time.Duration
-	operation   string
-	startTime   time.Time
-	metadata    map[string]interface{}
+	ctx       context.Context
+	cancel    context.CancelFunc
+	timeout   time.Duration
+	operation string
+	startTime time.Time
+	metadata  map[string]interface{}
 }
 
 // NewOperationContext creates a new operation context with timeout
@@ -146,7 +146,7 @@ func (oc *OperationContext) IsCancelled() bool {
 
 // String returns a string representation of the operation context
 func (oc *OperationContext) String() string {
-	return fmt.Sprintf("OperationContext{operation=%s, elapsed=%v, remaining=%v, err=%v}", 
+	return fmt.Sprintf("OperationContext{operation=%s, elapsed=%v, remaining=%v, err=%v}",
 		oc.operation, oc.Elapsed(), oc.Remaining(), oc.Err())
 }
 

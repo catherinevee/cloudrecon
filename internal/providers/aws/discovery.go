@@ -25,7 +25,7 @@ func NewProvider(cfg core.AWSConfig) (*AWSProvider, error) {
 	// Load AWS configuration with timeout
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
-	
+
 	awsConfig, err := config.LoadDefaultConfig(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to load AWS config: %w", err)

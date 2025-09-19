@@ -118,7 +118,7 @@ using the most efficient method available (cloud-native tools when possible).`,
 			// Initialize storage with context
 			storageCtx := ctxManager.NewOperationContext(core.OperationStorage)
 			defer storageCtx.Cancel()
-			
+
 			storage, err := storage.NewSQLiteStorage(config.Storage.DatabasePath)
 			if err != nil {
 				return core.NewStorageError("failed to initialize storage", err)
@@ -200,7 +200,7 @@ using the most efficient method available (cloud-native tools when possible).`,
 
 			discoveryCtx := ctxManager.NewOperationContext(core.OperationDiscovery)
 			defer discoveryCtx.Cancel()
-			
+
 			result, err := orchestrator.Discover(discoveryCtx.Context())
 			if err != nil {
 				return core.NewProviderError("discovery failed", err)

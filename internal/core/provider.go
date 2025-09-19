@@ -171,9 +171,9 @@ type GCPConfig struct {
 
 // DiscoveryConfig represents discovery configuration
 type DiscoveryConfig struct {
-	MaxParallel     int    `yaml:"max_parallel" mapstructure:"max_parallel"`
-	Timeout         string `yaml:"timeout" mapstructure:"timeout"`
-	UseNativeTools  bool   `yaml:"use_native_tools" mapstructure:"use_native_tools"`
+	MaxParallel    int    `yaml:"max_parallel" mapstructure:"max_parallel"`
+	Timeout        string `yaml:"timeout" mapstructure:"timeout"`
+	UseNativeTools bool   `yaml:"use_native_tools" mapstructure:"use_native_tools"`
 }
 
 // AnalysisConfig represents analysis configuration
@@ -181,7 +181,7 @@ type AnalysisConfig struct {
 	EnableCostAnalysis       bool `yaml:"enable_cost_analysis" mapstructure:"enable_cost_analysis"`
 	EnableSecurityAnalysis   bool `yaml:"enable_security_analysis" mapstructure:"enable_security_analysis"`
 	EnableDependencyAnalysis bool `yaml:"enable_dependency_analysis" mapstructure:"enable_dependency_analysis"`
-	CacheResults            bool `yaml:"cache_results" mapstructure:"cache_results"`
+	CacheResults             bool `yaml:"cache_results" mapstructure:"cache_results"`
 }
 
 // LoggingConfig represents logging configuration

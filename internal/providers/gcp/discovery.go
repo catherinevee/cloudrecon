@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"cloud.google.com/go/asset/apiv1/assetpb"
+	"cloud.google.com/go/storage"
 	resourcemanager "cloud.google.com/go/resourcemanager/apiv3"
 	"cloud.google.com/go/resourcemanager/apiv3/resourcemanagerpb"
 	"github.com/cloudrecon/cloudrecon/internal/core"
@@ -26,7 +27,7 @@ func NewProvider(cfg core.GCPConfig) (*GCPProvider, error) {
 	// Create context with timeout for client initialization
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
-	
+
 	assetInventoryClient, err := NewGCPAssetInventoryClient(ctx)
 	if err != nil {
 		logrus.Warnf("Failed to create Asset Inventory client: %v", err)
@@ -389,8 +390,75 @@ func (p *GCPProvider) discoverSQLInstances(ctx context.Context, region string, a
 
 // discoverStorageResources discovers comprehensive Cloud Storage resources
 func (p *GCPProvider) discoverStorageResources(ctx context.Context, region string, account core.Account) []core.Resource {
-	// TODO: Implement comprehensive Cloud Storage discovery
-	return []core.Resource{}
+	var resources []core.Resource
+
+	// Create storage client
+	client, err := storage.NewClient(ctx)
+	if err != nil {
+		logrus.Warnf("Failed to create storage client: %v", err)
+		return resources
+	}
+	defer client.Close()
+
+	// List all buckets
+	it := client.Buckets(ctx, account.ID)
+	for {
+		bucketAttrs, err := it.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			logrus.Warnf("Failed to list bucket: %v", err)
+			continue
+		}
+
+		// Create resource
+		resource := core.Resource{
+			ID:              fmt.Sprintf("storage-bucket-%s", bucketAttrs.Name),
+			Provider:        "gcp",
+			AccountID:       account.ID,
+			Region:          bucketAttrs.Location,
+			Service:         "storage",
+			Type:            "bucket",
+			Name:            bucketAttrs.Name,
+			ARN:             fmt.Sprintf("//storage.googleapis.com/%s", bucketAttrs.Name),
+			CreatedAt:       bucketAttrs.Created,
+			UpdatedAt:       bucketAttrs.Updated,
+			DiscoveredAt:    time.Now(),
+			DiscoveryMethod: "direct_api",
+			Tags: map[string]string{
+				"bucket_name":    bucketAttrs.Name,
+				"location":       bucketAttrs.Location,
+				"storage_class":  bucketAttrs.StorageClass,
+				"project_number": fmt.Sprintf("%d", bucketAttrs.ProjectNumber),
+			},
+		}
+
+		// Add additional metadata
+		if bucketAttrs.Encryption != nil {
+			resource.Tags["encryption"] = "enabled"
+		} else {
+			resource.Tags["encryption"] = "disabled"
+		}
+
+		if bucketAttrs.VersioningEnabled {
+			resource.Tags["versioning"] = "enabled"
+		} else {
+			resource.Tags["versioning"] = "disabled"
+		}
+
+		// Check for public access
+		if bucketAttrs.PublicAccessPrevention == storage.PublicAccessPreventionEnforced {
+			resource.Tags["public_access"] = "prevented"
+		} else {
+			resource.Tags["public_access"] = "allowed"
+		}
+
+		resources = append(resources, resource)
+	}
+
+	logrus.Debugf("Discovered %d storage buckets for project %s", len(resources), account.ID)
+	return resources
 }
 
 // discoverSQLResources discovers comprehensive Cloud SQL resources
